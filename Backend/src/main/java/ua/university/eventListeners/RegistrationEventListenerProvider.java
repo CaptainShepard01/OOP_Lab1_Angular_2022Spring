@@ -1,30 +1,20 @@
 package ua.university.eventListeners;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.models.*;
-import ua.university.DAO.FacultyDAO;
+import ua.university.DAO.StudentDAO;
+import ua.university.DAO.TeacherDAO;
 import ua.university.models.Student;
 import ua.university.models.Teacher;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.*;
-
-import static org.apache.http.impl.client.HttpClients.createDefault;
 
 public class RegistrationEventListenerProvider implements EventListenerProvider {
     private final KeycloakSession session;
@@ -46,10 +36,12 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
             MultivaluedMap<String, String> formParameters = req.getFormParameters();
 
             String ourRole = formParameters.get("role").toString();
-            FacultyDAO facultyDAO = null;
+            StudentDAO studentDAO = null;
+            TeacherDAO teacherDAO = null;
 
             try {
-                facultyDAO = new FacultyDAO();
+                studentDAO = new StudentDAO();
+                teacherDAO = new TeacherDAO();
             } catch (ClassNotFoundException | SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -59,7 +51,7 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 
-                facultyDAO.saveStudent(new Student(-1, newRegisteredUser.getFirstName()));
+                studentDAO.saveStudent(new Student(-1, newRegisteredUser.getFirstName()));
             }
 
             if (Objects.equals(ourRole, "[teacher]")) {
@@ -67,7 +59,7 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 
-                facultyDAO.saveTeacher(new Teacher(-1, newRegisteredUser.getFirstName()));
+                teacherDAO.saveTeacher(new Teacher(-1, newRegisteredUser.getFirstName()));
             }
 
             System.out.println("Hello, am I alive? Am I? (•_•) ( •_•)>⌐■-■ (⌐■_■) -> " + newRegisteredUser.getUsername());
