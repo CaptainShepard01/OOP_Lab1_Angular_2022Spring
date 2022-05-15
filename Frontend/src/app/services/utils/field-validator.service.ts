@@ -5,10 +5,8 @@ import {FormGroup} from "@angular/forms";
   providedIn: 'root'
 })
 export class FieldValidatorService {
-// @ts-ignore
-  form: FormGroup;
   // @ts-ignore
-  private formSubmitAttempt: boolean;
+  form: FormGroup;
 
   constructor() { }
 
@@ -17,18 +15,10 @@ export class FieldValidatorService {
 
   isFieldValid(field: string) {
     // @ts-ignore
-    return (!this.form.get(field).valid && this.form.get(field).touched) || (this.form.get(field).untouched && this.formSubmitAttempt);
-  }
-
-  displayFieldCss(field: string) {
-    return {
-      'has-error': this.isFieldValid(field),
-      'has-feedback': this.isFieldValid(field)
-    };
+    return !this.form.controls[field].valid && this.form.controls[field].touched;
   }
 
   reset() {
     this.form.reset();
-    this.formSubmitAttempt = false;
   }
 }

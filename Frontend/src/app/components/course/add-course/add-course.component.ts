@@ -14,8 +14,6 @@ export class AddCourseComponent implements OnInit {
   teachers: Teacher[] = [];
   // @ts-ignore
   form: FormGroup;
-  // @ts-ignore
-  private formSubmitAttempt: boolean;
 
   // @ts-ignore
   name: string;
@@ -34,15 +32,14 @@ export class AddCourseComponent implements OnInit {
 
     this.teacherService.getTeachers().subscribe((teachers) => (this.teachers = teachers));
     this.form = this.formBuilder.group({
-      name: [null, [Validators.required]],
-      maxGrade: [null, [Validators.required, Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
-      teacherId: [null, [Validators.required]]
+      name: ['', [Validators.required]],
+      maxGrade: ['', [Validators.required, Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
+      teacherId: ['', [Validators.required]]
     });
     this.fieldValidator.form = this.form;
   }
 
   onSubmit() {
-    this.formSubmitAttempt = true;
     if (this.form.valid) {
       const newCourse = {
         name: this.name,
@@ -55,19 +52,13 @@ export class AddCourseComponent implements OnInit {
 
       this.onAddCourse.emit(newCourse);
 
-      this.name = '';
-      this.maxGrade = 0;
-      this.teacherId = 0;
       this.fieldValidator.reset();
     }
   }
 
   isFieldValid(field: string) {
+    // @ts-ignore
     return this.fieldValidator.isFieldValid(field);
-  }
-
-  displayFieldCss(field: string) {
-    return this.fieldValidator.displayFieldCss(field);
   }
 
   reset() {
