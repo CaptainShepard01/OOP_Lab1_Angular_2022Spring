@@ -10,11 +10,9 @@ import java.sql.SQLException;
 
 public class CourseService {
     private CourseDAO courseDAO;
-    private TeacherDAO teacherDAO;
 
     public CourseService() throws SQLException, ClassNotFoundException {
         this.courseDAO = new CourseDAO();
-        this.teacherDAO = new TeacherDAO();
     }
 
     public String indexCourse() {
@@ -30,7 +28,7 @@ public class CourseService {
         this.courseDAO.saveCourse(course);
         ObjectMapper mapper = new ObjectMapper();
         try {
-            course.setTeacher(this.teacherDAO.getTeacher(course.getTeacher().getId()));
+            course = this.courseDAO.getCourse(course.getName());
             return mapper.writeValueAsString(course);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

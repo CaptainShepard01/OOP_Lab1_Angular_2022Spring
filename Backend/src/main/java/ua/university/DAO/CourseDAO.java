@@ -69,6 +69,28 @@ public class CourseDAO {
         }
     }
 
+    public Course getCourse(String name) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM courses " +
+                    "WHERE name=?");
+            statement.setString(1, name);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                return new Course(resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getInt("max_grade"),
+                        this.teacherDAO.getTeacher(resultSet.getLong("teacher_id")));
+            }
+
+            return null;
+        } catch (SQLException e) {
+            System.out.println(" >>     " + e.getMessage());
+            return null;
+        }
+    }
+
     public List<Course> getCourses(String name) {
         List<Course> resultList = new ArrayList<>();
 

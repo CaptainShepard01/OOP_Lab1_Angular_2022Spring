@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http'
 import {Observable} from "rxjs";
-import {Course} from "../interfaces/Course";
+import {Course} from "../../interfaces/Course";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -22,7 +22,7 @@ export class CourseService {
     return this.http.get<Course[]>(this.apiUrl);
   }
 
-  deleteCourse(course: Course){
+  deleteCourse(course: Course):Observable<Course>{
     return this.http.delete<Course>(`${this.apiUrl}?id=${course.id}`);
   }
 

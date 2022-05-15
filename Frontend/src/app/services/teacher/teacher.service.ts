@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Course} from "../interfaces/Course";
-import {Teacher} from "../interfaces/Teacher";
+import {Course} from "../../interfaces/Course";
+import {Teacher} from "../../interfaces/Teacher";
 
 @Injectable({
   providedIn: 'root'
