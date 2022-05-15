@@ -21,4 +21,8 @@ export class CoursesComponent implements OnInit {
   deleteCourse(course: Course){
     this.courseService.deleteCourse(course).subscribe(() => (this.courses=this.courses.filter((item) => item.id !== course.id)));
   }
+
+  addCourse(course: Course) {
+    this.courseService.addCourse(course).subscribe((course) =>(this.courses.push(course)));
+  }
 }

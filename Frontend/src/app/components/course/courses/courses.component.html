@@ -1,3 +1,4 @@
 <div class="container">
+  <app-add-course (onAddCourse)="addCourse($event)"></app-add-course>
   <app-course-item *ngFor="let course of courses" [course]="course" (onDeleteTask)="deleteCourse(course)"></app-course-item>
 </div>

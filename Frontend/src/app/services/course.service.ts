@@ -3,14 +3,16 @@ import {HttpClient, HttpHeaders} from '@angular/common/http'
 import {Observable} from "rxjs";
 import {Course} from "../interfaces/Course";
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-type': 'application/json',
+  })
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
-  // @ts-ignore
-  private status: string;
-  // @ts-ignore
-  private errorMessage: string;
   private apiUrl = 'http://localhost:8080/courses'
 
   constructor(private http: HttpClient) {
@@ -24,4 +26,7 @@ export class CourseService {
     return this.http.delete<Course>(`${this.apiUrl}?id=${course.id}`);
   }
 
+  addCourse(course: Course):Observable<Course>{
+    return this.http.post<Course>(this.apiUrl, course, httpOptions);
+  }
 }

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Teacher} from "../../../interfaces/Teacher";
+import {Course} from "../../../interfaces/Course";
+import {TeacherService} from "../../../services/teacher.service";
 
 @Component({
   selector: 'app-add-course',
@@ -6,10 +9,39 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-course.component.css']
 })
 export class AddCourseComponent implements OnInit {
+  teachers: Teacher[] = [];
 
-  constructor() { }
+  // @ts-ignore
+  name: string;
+  // @ts-ignore
+  maxGrade: number;
+  // @ts-ignore
+  teacherId: number;
 
-  ngOnInit(): void {
+  @Output() onAddCourse: EventEmitter<Course> = new EventEmitter();
+
+  constructor(private teacherService: TeacherService) {
+
   }
 
+  ngOnInit(): void {
+    this.teacherService.getTeachers().subscribe((teachers) => (this.teachers = teachers));
+  }
+
+  onSubmit() {
+    const newCourse = {
+      name: this.name,
+      maxGrade: this.maxGrade,
+      teacher: {
+        id: this.teacherId,
+        name: ''
+      }
+    }
+
+    this.onAddCourse.emit(newCourse);
+
+    this.name = '';
+    this.maxGrade = 0;
+    this.teacherId = 0;
+  }
 }
