@@ -1,1 +1,3 @@
-<p>student-courses works!</p>
+<app-add-student-course (onAddStudentCourse)="addStudentCourse($event)"></app-add-student-course>
+<app-student-course-item *ngFor="let studentCourse of studentCourses"
+                         [studentCourse]="studentCourse"></app-student-course-item>

@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {KeycloakService} from "keycloak-angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -9,17 +11,14 @@ import {HttpClient} from "@angular/common/http";
 export class AppComponent {
   title = 'Frontend';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              // private keycloakService: KeycloakService,
+              private router: Router) {
 
   }
 
-  posts:any = []
-
-  loadPosts() {
-    this.http
-      .get('https://jsonplaceholder.typicode.com/posts')
-      .subscribe((posts:any) => {
-        this.posts = posts;
-      });
+  logout() {
+    // this.keycloakService.logout();
+    this.router.navigate(['mainPage']);
   }
 }

@@ -1,17 +1,22 @@
 package ua.university.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ua.university.models.Course;
+import ua.university.models.StudentCourseRelation;
 import ua.university.services.StudentCourseRelationService;
+import ua.university.utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet("/studentCourseRelations")
+@WebServlet("/api/studentCourseRelations/*")
 public class StudentCourseRelationController extends HttpServlet {
     private StudentCourseRelationService service;
 
@@ -27,19 +32,93 @@ public class StudentCourseRelationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-        PrintWriter out = response.getWriter();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            int idValue = ServletUtils.getURIId(request.getRequestURI());
+            String data = "";
 
-        String coursesJsonString = this.service.indexStudentCourseRelation();
+            String studentCourseRelationsJsonString = "";
+            if (idValue == -1) {
+                studentCourseRelationsJsonString = this.service.indexStudentCourseRelation();
+            } else {
+                studentCourseRelationsJsonString = this.service.getStudentCourseRelation(idValue);
+            }
 
-        out.print(coursesJsonString);
-        out.flush();
+            out.print(studentCourseRelationsJsonString);
+        } catch (Exception exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            StringBuilder requestBody = new StringBuilder();
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
 
+            try (BufferedReader reader = req.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    requestBody.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
+            String studentCourseRelationsJsonString = this.service.addStudentCourseRelation(studentCourseRelation);
+
+            out.print(studentCourseRelationsJsonString);
+
+        }catch (Exception exception){
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            int id = ServletUtils.getURIId(req.getRequestURI());
+            this.service.deleteStudentCourseRelation(id);
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            StringBuilder requestBody = new StringBuilder();
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+
+            try (BufferedReader reader = req.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    requestBody.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int id = ServletUtils.getURIId(req.getRequestURI());
+            StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
+            String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(id, studentCourseRelation);
+
+            out.print(studentCourseRelationJsonString);
+            resp.setStatus(200);
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 }

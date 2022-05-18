@@ -18,8 +18,10 @@ export class CoursesComponent implements OnInit {
     this.courseService.getCourses().subscribe((courses) => (this.courses = courses));
   }
 
-  deleteCourse(course: Course){
-    this.courseService.deleteCourse(course).subscribe(() => (this.courses=this.courses.filter((item) => item.id !== course.id)));
+  deleteCourse(courseId: number | undefined){
+    if (courseId != null) {
+      this.courseService.deleteCourse(courseId).subscribe(() => (this.courses = this.courses.filter((item) => item.id !== courseId)));
+    }
   }
 
   addCourse(course: Course) {

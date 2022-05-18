@@ -83,6 +83,23 @@ public class StudentDAO {
         }
     }
 
+    public int getMaxGlobalId() {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT max(id) FROM students");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                return resultSet.getInt("max");
+            }
+
+            return -1;
+        } catch (SQLException e) {
+            System.out.println(" >>     " + e.getMessage());
+            return -1;
+        }
+    }
+
     public boolean saveStudent(Student student) {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO students " +

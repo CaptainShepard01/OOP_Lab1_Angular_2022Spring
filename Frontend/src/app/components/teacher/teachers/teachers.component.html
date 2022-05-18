@@ -1,1 +1,3 @@
-<p>teachers works!</p>
+<app-add-teacher (onAddTeacher)="addTeacher($event)"></app-add-teacher>
+<app-teacher-item *ngFor="let teacher of teachers" [teacher]="teacher"></app-teacher-item>
+

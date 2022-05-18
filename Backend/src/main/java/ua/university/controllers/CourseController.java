@@ -3,6 +3,7 @@ package ua.university.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.university.models.Course;
 import ua.university.services.CourseService;
+import ua.university.utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet("/courses")
+@WebServlet("/api/courses/*")
 public class CourseController extends HttpServlet {
     private CourseService service;
 
@@ -37,50 +38,93 @@ public class CourseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        try {
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-        String coursesJsonString = this.service.indexCourse();
+            int idValue = ServletUtils.getURIId(request.getRequestURI());
+            String data = "";
 
-        out.print(coursesJsonString);
+            String coursesJsonString = "";
+            if (idValue == -1) {
+                coursesJsonString = this.service.indexCourse();
+            } else {
+                coursesJsonString = this.service.getCourse(idValue);
+            }
+
+            out.print(coursesJsonString);
+        } catch (Exception exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StringBuilder requestBody = new StringBuilder();
-        PrintWriter out = resp.getWriter();
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+        try {
+            StringBuilder requestBody = new StringBuilder();
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
 
-        try (BufferedReader reader = req.getReader()) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                requestBody.append(line);
+            try (BufferedReader reader = req.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    requestBody.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
-        String coursesJsonString = this.service.addCourse(course);
+            Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
+            String coursesJsonString = this.service.addCourse(course);
 
-        out.print(coursesJsonString);
-        resp.setStatus(200);
+            out.print(coursesJsonString);
+
+        }catch (Exception exception){
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        long courseId = Long.parseLong(req.getParameter("id"));
-
-        this.service.deleteCourse(courseId);
-
-        resp.setStatus(200);
+        try {
+            int id = ServletUtils.getURIId(req.getRequestURI());
+            this.service.deleteCourse(id);
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        try {
+            StringBuilder requestBody = new StringBuilder();
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+
+            try (BufferedReader reader = req.getReader()) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    requestBody.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int id = ServletUtils.getURIId(req.getRequestURI());
+            Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
+            String courseJsonString = this.service.updateCourse(id, course);
+
+            out.print(courseJsonString);
+            resp.setStatus(200);
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            System.out.println(exception);
+        }
     }
 }

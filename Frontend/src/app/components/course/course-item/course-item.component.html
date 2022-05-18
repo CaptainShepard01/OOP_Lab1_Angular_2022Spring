@@ -1,7 +1,5 @@
-<div class="course col-6 border border-primary m-2 rounded">
-  <h3 class="d-flex align-middle justify-content-between">Name: {{course.name}}
-    <fa-icon (click)="onDelete(course)" [ngStyle]="{'color': 'red'}" [icon]="faTimes"></fa-icon>
-  </h3>
-  <p>Max grade: {{course.maxGrade}}</p>
-  <p>Teacher name: {{course.teacher.name}}</p>
+<div class="course col-6 border border-primary m-2 rounded details" routerLink="/course/{{ course?.id }}">
+  <h3 class="d-flex align-middle justify-content-between">Name: {{course?.name}}</h3>
+  <p>Max grade: {{course?.maxGrade}}</p>
+  <p>Teacher name: {{course?.teacher?.name}}</p>
 </div>

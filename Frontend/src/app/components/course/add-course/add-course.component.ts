@@ -20,11 +20,13 @@ export class AddCourseComponent implements OnInit {
   // @ts-ignore
   maxGrade: number;
   // @ts-ignore
-  teacherId: number;
+  teacher: Teacher;
 
   @Output() onAddCourse: EventEmitter<Course> = new EventEmitter();
 
-  constructor(private teacherService: TeacherService, private formBuilder: FormBuilder, private fieldValidator: FieldValidatorService) {
+  constructor(private teacherService: TeacherService,
+              private formBuilder: FormBuilder,
+              private fieldValidator: FieldValidatorService) {
 
   }
 
@@ -34,7 +36,7 @@ export class AddCourseComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required]],
       maxGrade: ['', [Validators.required, Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
-      teacherId: ['', [Validators.required]]
+      teacher: ['', [Validators.required]]
     });
     this.fieldValidator.form = this.form;
   }
@@ -44,10 +46,7 @@ export class AddCourseComponent implements OnInit {
       const newCourse = {
         name: this.name,
         maxGrade: this.maxGrade,
-        teacher: {
-          id: this.teacherId,
-          name: ''
-        }
+        teacher: this.teacher
       }
 
       this.onAddCourse.emit(newCourse);

@@ -1,4 +1,15 @@
 <div class="container">
-  <app-app-header></app-app-header>
-  <app-courses></app-courses>
+  <nav class="navbar bg-dark mb-4">
+    <a href="/" class="nav__link" data-link>Main page</a>
+
+    <a href="/teachers" class="nav__link" data-link>Teachers</a>
+    <a href="/courses" class="nav__link" data-link>Courses</a>
+    <a href="/students" class="nav__link" data-link>Students</a>
+    <a href="/studentsCourses" class="nav__link" data-link>Students-Courses</a>
+    <a href="/logout" class="nav__link" data-link>Logout</a>
+
+    <a href="/rocket" class="nav__link" data-link>Rocket!</a>
+
+  </nav>
+  <router-outlet></router-outlet>
 </div>

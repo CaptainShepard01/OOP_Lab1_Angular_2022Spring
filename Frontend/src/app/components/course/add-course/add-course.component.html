@@ -1,4 +1,4 @@
-<form class="add-course-form row g-3" (ngSubmit)="onSubmit()" [formGroup]="form">
+<form class="add-course-form row g-3 mb-3" (ngSubmit)="onSubmit()" [formGroup]="form">
   <div class="col-md-4 form-group">
     <label for="name" class="form-label control-label required">Course name</label>
     <input type="text" class="form-control" name="name" id="name" [(ngModel)]="name" formControlName="name"/>
@@ -20,12 +20,12 @@
   </div>
 
   <div class="col-md-4 form-group">
-    <label for="teacher" class="form-label control-label required">Teacher name</label>
-    <select name="teacher" class="form-control" id="teacher" [(ngModel)]="teacherId" formControlName="teacherId">
-      <option *ngFor="let teacher of teachers" [ngValue]="teacher.id">{{teacher.name}}</option>
+    <label for="teacher" class="form-label control-label required">Teacher</label>
+    <select name="teacher" class="form-control" id="teacher" [(ngModel)]="teacher" formControlName="teacher">
+      <option *ngFor="let teacher of teachers" [ngValue]="teacher">{{teacher?.name}}</option>
     </select>
     <app-field-error-display
-      [displayError]="isFieldValid('teacherId')"
+      [displayError]="isFieldValid('teacher')"
       errorMsg="Please choose teacher">
     </app-field-error-display>
   </div>

@@ -91,6 +91,23 @@ public class CourseDAO {
         }
     }
 
+    public int getMaxGlobalId() {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT max(id) FROM courses");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                return resultSet.getInt("max");
+            }
+
+            return -1;
+        } catch (SQLException e) {
+            System.out.println(" >>     " + e.getMessage());
+            return -1;
+        }
+    }
+
     public List<Course> getCourses(String name) {
         List<Course> resultList = new ArrayList<>();
 

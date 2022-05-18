@@ -75,6 +75,23 @@ public class StudentCourseRelationDAO {
         }
     }
 
+    public int getMaxGlobalId() {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT max(id) FROM student_course_relations");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                return resultSet.getInt("max");
+            }
+
+            return -1;
+        } catch (SQLException e) {
+            System.out.println(" >>     " + e.getMessage());
+            return -1;
+        }
+    }
+
     public boolean saveStudentCourseRelation(StudentCourseRelation studentCourseRelation) {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO student_course_relations " +

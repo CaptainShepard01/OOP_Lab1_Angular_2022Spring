@@ -61,6 +61,23 @@ public class TeacherDAO {
         }
     }
 
+    public int getMaxGlobalId() {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT max(id) FROM teachers");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                return resultSet.getInt("max");
+            }
+
+            return -1;
+        } catch (SQLException e) {
+            System.out.println(" >>     " + e.getMessage());
+            return -1;
+        }
+    }
+
     public boolean saveTeacher(Teacher teacher) {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO teachers " +

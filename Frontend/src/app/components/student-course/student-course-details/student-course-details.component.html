@@ -1,0 +1,58 @@
+<div class="student-course col-6 border border-primary mb-3 m-2 rounded">
+  <h1 class="d-flex align-middle justify-content-between">Student: {{studentCourse?.student?.name}}
+    <fa-icon (click)="onDelete(studentCourse.id)" [ngStyle]="{'color': 'red'}" [icon]="faTimes"
+             class="delete"></fa-icon>
+  </h1>
+  <h1>Course: {{studentCourse?.course?.name}}</h1>
+  <h3>Grade: {{studentCourse?.grade}}</h3>
+  <h3>Review: {{studentCourse?.review}}</h3>
+</div>
+
+<form class="add-studentCourse-form row g-3" (ngSubmit)="onUpdate()" [formGroup]="form">
+  <div class="col-md-4 form-group">
+    <label for="student" class="form-label control-label required">New student</label>
+    <select name="student" class="form-control" id="student" [(ngModel)]="student" formControlName="student">
+      <option *ngFor="let student of students" [ngValue]="student">{{student?.name}}</option>
+    </select>
+    <app-field-error-display
+      [displayError]="isFieldValid('student')"
+      errorMsg="Please choose student">
+    </app-field-error-display>
+  </div>
+
+  <div class="col-md-4 form-group">
+    <label for="course" class="form-label control-label required">New course</label>
+    <select name="course" class="form-control" id="course" [(ngModel)]="course" formControlName="course">
+      <option *ngFor="let course of courses" [ngValue]="course">{{course?.name}}</option>
+    </select>
+    <app-field-error-display
+      [displayError]="isFieldValid('course')"
+      errorMsg="Please choose course">
+    </app-field-error-display>
+  </div>
+
+  <div class="col-md-4 form-group">
+    <label for="grade" class="form-label control-label required">New max grade</label>
+    <input type="number" class="form-control" name="grade" id="grade" min="0" max="100" [(ngModel)]="grade"
+           formControlName="grade"/>
+
+    <app-field-error-display
+      [displayError]="isFieldValid('grade')"
+      errorMsg="Please enter a valid grade (1-100)">
+    </app-field-error-display>
+  </div>
+
+  <div class="col-md-4 form-group">
+    <label for="review" class="form-label control-label required">New review</label>
+    <input type="text" class="form-control" name="review" id="review" [(ngModel)]="review" formControlName="review"/>
+    <app-field-error-display
+      [displayError]="isFieldValid('review')"
+      errorMsg="Please enter a valid review">
+    </app-field-error-display>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-success mr-lg-4" [disabled]="!form.valid">Update</button>
+    <button class="btn btn-secondary" (click)="reset()">Reset</button>
+  </div>
+</form>

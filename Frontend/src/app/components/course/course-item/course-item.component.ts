@@ -1,6 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { Course } from '../../../interfaces/Course';
-import {faTimes} from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-course-item',
@@ -8,17 +7,10 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons'
   styleUrls: ['./course-item.component.css']
 })
 export class CourseItemComponent implements OnInit {
-  // @ts-ignore
-  @Input() course: Course;
-  @Output() onDeleteTask: EventEmitter<Course> = new EventEmitter<Course>()
-  faTimes = faTimes;
+  @Input() course!: Course;
 
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  onDelete(course: Course){
-    this.onDeleteTask.emit(course);
   }
 }
