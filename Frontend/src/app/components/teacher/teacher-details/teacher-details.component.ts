@@ -5,6 +5,7 @@ import {TeacherService} from "../../../services/teacher/teacher.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FieldValidatorService} from "../../../services/utils/field-validator.service";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-teacher-details',
@@ -17,13 +18,22 @@ export class TeacherDetailsComponent implements OnInit {
 
   name!: string;
 
+  roles: string[] = [];
+
   faTimes = faTimes;
 
   constructor(private teacherService: TeacherService,
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
-              private fieldValidator: FieldValidatorService) {
+              private fieldValidator: FieldValidatorService,
+              private keycloakService: KeycloakService) {
+  }
+
+  get hasRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   ngOnInit(): void {
@@ -37,6 +47,7 @@ export class TeacherDetailsComponent implements OnInit {
     this.fieldValidator.form = this.form;
 
     this.showTeacher();
+    this.roles = this.keycloakService.getUserRoles();
   }
 
   onDelete(teacherId: number | undefined){

@@ -47,7 +47,7 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
             }
 
             if (Objects.equals(ourRole, "[student]")) {
-                RoleModel roleModel = realm.getClientById(realm.getClientByClientId("Faculty").getId()).getRole("student");
+                RoleModel roleModel = realm.getClientById(realm.getClientByClientId("BackendClient").getId()).getRole("ROLE_STUDENT");
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 
@@ -55,7 +55,7 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
             }
 
             if (Objects.equals(ourRole, "[teacher]")) {
-                RoleModel roleModel = realm.getClientById(realm.getClientByClientId("Faculty").getId()).getRole("teacher");
+                RoleModel roleModel = realm.getClientById(realm.getClientByClientId("BackendClient").getId()).getRole("ROLE_TEACHER");
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 

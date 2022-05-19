@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Teacher} from "../../../interfaces/Teacher";
 import {TeacherService} from "../../../services/teacher/teacher.service";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-teachers',
@@ -10,12 +11,23 @@ import {TeacherService} from "../../../services/teacher/teacher.service";
 export class TeachersComponent implements OnInit {
   teachers: Teacher[] = [];
 
-  constructor(private teacherService: TeacherService) {
+  roles: string[] = [];
 
+  constructor(private teacherService: TeacherService,
+              private keycloakService: KeycloakService) {
+
+  }
+
+  get hasRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   ngOnInit(): void {
     this.teacherService.getTeachers().subscribe((teachers) => (this.teachers = teachers));
+
+    this.roles = this.keycloakService.getUserRoles();
   }
 
   deleteTeacher(teacherId: number | undefined){

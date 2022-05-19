@@ -38,10 +38,13 @@ public class StudentController extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
 
             int idValue = ServletUtils.getURIId(request.getRequestURI());
-            String data = "";
 
             String studentsJsonString = "";
-            if (idValue == -1) {
+
+            String name = request.getParameter("name");
+            if (name != null) {
+                studentsJsonString = this.service.getStudentByName(name);
+            } else if (idValue == -1) {
                 studentsJsonString = this.service.indexStudent();
             } else {
                 studentsJsonString = this.service.getStudent(idValue);
@@ -76,7 +79,7 @@ public class StudentController extends HttpServlet {
 
             out.print(studentsJsonString);
 
-        }catch (Exception exception){
+        } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             System.out.println(exception);
         }

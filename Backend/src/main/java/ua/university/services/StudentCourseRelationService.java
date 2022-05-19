@@ -61,6 +61,24 @@ public class StudentCourseRelationService {
         return "";
     }
 
+    public String indexStudentCourseRelationForStudent(String studentName){
+        try {
+            return objectsToJson(this.studentCourseRelationDAO.getStudentCourseRelationsForStudent(studentName));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return "";
+    }
+
+    public String indexStudentCourseRelationForTeacher(String teacherName){
+        try {
+            return objectsToJson(this.studentCourseRelationDAO.getStudentCourseRelationsForTeacher(teacherName));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return "";
+    }
+
     public String getStudentCourseRelation(long id) {
         try {
             return objectToJson(this.studentCourseRelationDAO.getStudentCourseRelation(id));

@@ -24,6 +24,10 @@ export class StudentService {
     );
   }
 
+  getStudentByName(name: string): Observable<Student>{
+    return this.http.get<Student>(`${this.apiUrl}?name=${name}`);
+  }
+
   getStudent(id: number): Observable<Student> {
     return this.http.get<Student>(`${this.apiUrl}/${id}`);
   }

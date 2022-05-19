@@ -1,6 +1,6 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -29,42 +29,84 @@ import { TeacherItemComponent } from './components/teacher/teacher-item/teacher-
 import { AddTeacherComponent } from './components/teacher/add-teacher/add-teacher.component';
 import { StudentCourseItemComponent } from './components/student-course/student-course-item/student-course-item.component';
 import { AddStudentCourseComponent } from './components/student-course/add-student-course/add-student-course.component';
+import {environment} from "../environments/environment";
+import {KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService} from "keycloak-angular";
+import {AuthGuard} from "./auth/auth.guard";
+import {AuthService} from "./auth/auth.service";
+
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: environment.keycloak.issuer,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId
+      },
+      initOptions: {
+        onLoad: 'login-required',
+        checkLoginIframe: false,
+        // silentCheckSsoRedirectUri:
+        //   window.location.origin + `silent-check-sso.html`
+      },
+      enableBearerInterceptor: true,
+      bearerPrefix: 'Bearer',
+      bearerExcludedUrls: ['/mainPage'],
+      loadUserProfileAtStartUp: true,
+    });
+}
+
 
 const routes: Routes = [
-  {path: 'mainPage', component: MainPageComponent},
+  {path: 'mainPage',
+    component: MainPageComponent
+  },
   {
     path: 'studentsCourse/:id',
-    component: StudentCourseDetailsComponent
+    component: StudentCourseDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'studentsCourses',
-    component: StudentCoursesComponent
+    component: StudentCoursesComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'course/:id',
-    component: CourseDetailsComponent
+    component: CourseDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'courses',
-    component: CoursesComponent
+    component: CoursesComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'student/:id',
-    component: StudentDetailsComponent
+    component: StudentDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'students',
-    component: StudentsComponent
+    component: StudentsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'teacher/:id',
-    component: TeacherDetailsComponent
+    component: TeacherDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'teachers',
     component: TeachersComponent,
-    // canActivate: [AuthGuard],
-    // data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] },
+    canActivate: [AuthGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT'] },
   },
   {
     path: 'rocket',
@@ -114,21 +156,22 @@ const routes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    KeycloakAngularModule
   ],
   providers: [
-    // AuthService,
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: initializeKeycloak,
-    //   multi: true,
-    //   deps: [KeycloakService]
-    // },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: KeycloakBearerInterceptor,
-    //   multi: true,
-    // }
+    AuthService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService]
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: KeycloakBearerInterceptor,
+      multi: true,
+    }
   ],
   bootstrap: [AppComponent]
 })

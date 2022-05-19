@@ -5,6 +5,7 @@ import {StudentService} from "../../../services/student/student.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FieldValidatorService} from "../../../services/utils/field-validator.service";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-student-details',
@@ -18,13 +19,16 @@ export class StudentDetailsComponent implements OnInit {
   name!: string;
   maxGrade!: number;
 
+  roles: string[] = [];
+
   faTimes = faTimes;
 
   constructor(private studentService: StudentService,
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
-              private fieldValidator: FieldValidatorService) {
+              private fieldValidator: FieldValidatorService,
+              private keycloakService: KeycloakService) {
   }
 
   ngOnInit(): void {
@@ -38,6 +42,13 @@ export class StudentDetailsComponent implements OnInit {
     this.fieldValidator.form = this.form;
 
     this.showStudent();
+    this.roles = this.keycloakService.getUserRoles();
+  }
+
+  get hasRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   onDelete(studentId: number | undefined){

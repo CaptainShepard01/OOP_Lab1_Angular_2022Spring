@@ -12,13 +12,13 @@ export class AppComponent {
   title = 'Frontend';
 
   constructor(private http: HttpClient,
-              // private keycloakService: KeycloakService,
+              private keycloakService: KeycloakService,
               private router: Router) {
 
   }
 
   logout() {
-    // this.keycloakService.logout();
+    this.keycloakService.logout();
     this.router.navigate(['mainPage']);
   }
 }

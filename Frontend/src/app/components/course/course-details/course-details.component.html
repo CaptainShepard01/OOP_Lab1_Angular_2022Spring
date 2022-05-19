@@ -6,7 +6,7 @@
   <h3>Teacher name: {{course?.teacher?.name}}</h3>
 </div>
 
-<form class="add-course-form row g-3" (ngSubmit)="onUpdate()" [formGroup]="form">
+<form *ngIf="hasRole" class="add-course-form row g-3" (ngSubmit)="onUpdate()" [formGroup]="form">
   <div class="col-md-4 form-group">
     <label for="name" class="form-label control-label required">New name</label>
     <input type="text" class="form-control" name="name" id="name" [(ngModel)]="name" formControlName="name"/>

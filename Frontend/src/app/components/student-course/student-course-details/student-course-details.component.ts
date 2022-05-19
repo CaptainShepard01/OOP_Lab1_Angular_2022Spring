@@ -9,6 +9,7 @@ import {StudentCourseService} from "../../../services/student-course/student-cou
 import {StudentService} from "../../../services/student/student.service";
 import {CourseService} from "../../../services/course/course.service";
 import {StudentCourse} from "../../../interfaces/StudentCourse";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-student-course-details',
@@ -28,13 +29,16 @@ export class StudentCourseDetailsComponent implements OnInit {
 
   faTimes = faTimes;
 
+  roles: string[] = [];
+
   constructor(private studentCourseService: StudentCourseService,
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private studentService: StudentService,
               private courseService: CourseService,
               private router: Router,
-              private fieldValidator: FieldValidatorService) {
+              private fieldValidator: FieldValidatorService,
+              private keycloakService: KeycloakService) {
   }
 
   ngOnInit(): void {
@@ -48,13 +52,27 @@ export class StudentCourseDetailsComponent implements OnInit {
     this.form = this.formBuilder.group({
       student: ['', []],
       course: ['', []],
-      grade: ['', [Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
-      review: ['', []]
+      grade: ['', [Validators.required, Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
+      review: ['', [Validators.required]]
     });
 
     this.fieldValidator.form = this.form;
 
     this.showStudentCourse();
+
+    this.roles = this.keycloakService.getUserRoles();
+  }
+
+  get hasTeacherRole(): boolean {
+    let requiredRoles = ["ROLE_TEACHER"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
+  }
+
+  get hasAdminRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   onDelete(studentCourseId: number | undefined){
@@ -87,11 +105,29 @@ export class StudentCourseDetailsComponent implements OnInit {
 
   onUpdate() {
     if (this.form.valid) {
-      const newStudentCourse = {
+      let newStudentCourse = {
         student: this.student,
         course: this.course,
         grade: this.grade,
         review: this.review
+      }
+
+      if (this.hasTeacherRole && !this.hasAdminRole){
+        newStudentCourse.student = this.studentCourse.student;
+        newStudentCourse.course = this.studentCourse.course;
+      }
+
+      console.log(newStudentCourse);
+
+      try {
+        // @ts-ignore
+        newStudentCourse.student = this.student?._links.self.href;
+        // @ts-ignore
+        newStudentCourse.course = this.course?._links.self.href;
+      } catch (Error) {
+        newStudentCourse.student = this.student;
+        newStudentCourse.course = this.course;
+        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student)+ JSON.stringify(newStudentCourse.course));
       }
 
       this.studentCourseService.updateStudentCourse(newStudentCourse).subscribe({

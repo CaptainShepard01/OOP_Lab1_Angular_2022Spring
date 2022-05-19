@@ -1,2 +1,2 @@
-<app-add-student (onAddStudent)="addStudent($event)"></app-add-student>
+<app-add-student *ngIf="hasRole" (onAddStudent)="addStudent($event)"></app-add-student>
 <app-student-item *ngFor="let student of students" [student]="student"></app-student-item>

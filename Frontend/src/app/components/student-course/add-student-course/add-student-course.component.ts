@@ -6,6 +6,7 @@ import {FieldValidatorService} from "../../../services/utils/field-validator.ser
 import {CourseService} from "../../../services/course/course.service";
 import {StudentService} from "../../../services/student/student.service";
 import {Student} from "../../../interfaces/Student";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-add-student-course',
@@ -24,35 +25,79 @@ export class AddStudentCourseComponent implements OnInit {
 
   @Output() onAddStudentCourse: EventEmitter<StudentCourse> = new EventEmitter();
 
+  roles: string[] = [];
+
   constructor(private formBuilder: FormBuilder,
               private fieldValidator: FieldValidatorService,
               private studentService: StudentService,
-              private courseService: CourseService) {
+              private courseService: CourseService,
+              private keycloakService: KeycloakService) {
 
   }
 
   ngOnInit(): void {
+    this.roles = this.keycloakService.getUserRoles();
 
-    this.studentService.getStudents().subscribe((students) => (this.students = students));
+    if(this.hasAdminRole) {
+      this.studentService.getStudents().subscribe((students) => (this.students = students));
+    }
+    else if(this.hasStudentRole){
+      // @ts-ignore
+      let name: string = this.keycloakService.getKeycloakInstance().profile.firstName;
+
+      this.studentService.getStudentByName(name).subscribe((student) => (this.students.push(student)));
+    }
+
     this.courseService.getCourses().subscribe((courses) => (this.courses = courses));
 
     this.form = this.formBuilder.group({
       student: ['', [Validators.required]],
       course: ['', [Validators.required]],
-      grade: ['', [Validators.required, Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
-      review: ['', [Validators.required]]
+      grade: ['', [Validators.pattern("[0-9]+"), Validators.min(1), Validators.max(100)]],
+      review: ['', []]
     });
 
     this.fieldValidator.form = this.form;
+
+  }
+
+  get hasStudentRole(): boolean {
+    let requiredRoles = ["ROLE_STUDENT"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
+  }
+
+  get hasAdminRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   onSubmit() {
     if (this.form.valid) {
-      const newStudentCourse = {
+      let newStudentCourse = {
         student: this.student,
         course: this.course,
         grade: this.grade,
         review: this.review
+      }
+
+      if (this.hasStudentRole && !this.hasAdminRole){
+        newStudentCourse.grade = 0;
+        newStudentCourse.review = '';
+      }
+
+      console.log(newStudentCourse);
+
+      try {
+        // @ts-ignore
+        newStudentCourse.student = this.student?._links.self.href;
+        // @ts-ignore
+        newStudentCourse.course = this.course?._links.self.href;
+      } catch (Error) {
+        newStudentCourse.student = this.student;
+        newStudentCourse.course = this.course;
+        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student)+ JSON.stringify(newStudentCourse.course));
       }
 
       this.onAddStudentCourse.emit(newStudentCourse);

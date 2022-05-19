@@ -79,11 +79,10 @@ public class StudentService {
 
     public String updateStudent(int id, Student student) {
         this.studentDAO.updateStudent(id, student);
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(student);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return objectToJson(student);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -94,5 +93,15 @@ public class StudentService {
         } catch (Exception ex) {
             System.out.println(ex);
         }
+    }
+
+    public String getStudentByName(String name) {
+        try{
+            return objectToJson(this.studentDAO.getStudent(name).get(0));
+        }
+        catch (Exception ex){
+            System.out.println(ex);
+        }
+        return "";
     }
 }

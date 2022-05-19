@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {TeacherService} from "../../../services/teacher/teacher.service";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FieldValidatorService} from "../../../services/utils/field-validator.service";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-course-details',
@@ -22,6 +23,8 @@ export class CourseDetailsComponent implements OnInit {
   maxGrade!: number;
   teacher!: Teacher;
 
+  roles: string[] = [];
+
   faTimes = faTimes;
 
   constructor(private courseService: CourseService,
@@ -29,7 +32,14 @@ export class CourseDetailsComponent implements OnInit {
               private route: ActivatedRoute,
               private teacherService: TeacherService,
               private router: Router,
-              private fieldValidator: FieldValidatorService) {
+              private fieldValidator: FieldValidatorService,
+              private keycloakService: KeycloakService) {
+  }
+
+  get hasRole(): boolean {
+    let requiredRoles = ["ROLE_ADMIN"]
+    return requiredRoles.some((role) => this.roles.includes(role));
+    // return true;
   }
 
   ngOnInit(): void {
@@ -46,6 +56,8 @@ export class CourseDetailsComponent implements OnInit {
     this.fieldValidator.form = this.form;
 
     this.showCourse();
+
+    this.roles = this.keycloakService.getUserRoles();
   }
 
   onDelete(courseId: number | undefined){
@@ -78,10 +90,18 @@ export class CourseDetailsComponent implements OnInit {
 
   onUpdate() {
     if (this.form.valid) {
-      const newCourse = {
+      let newCourse = {
         name: this.name,
         maxGrade: this.maxGrade,
         teacher: this.teacher
+      }
+
+      try {
+        // @ts-ignore
+        newCourse.teacher = this.teacher?._links.self.href;
+      } catch (Error) {
+        newCourse.teacher = this.teacher;
+        console.log("Teacher: " + JSON.stringify(newCourse.teacher));
       }
 
       this.courseService.updateCourse(newCourse).subscribe({

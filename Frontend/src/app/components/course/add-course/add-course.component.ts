@@ -43,11 +43,19 @@ export class AddCourseComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      const newCourse = {
+      let newCourse = {
         name: this.name,
         maxGrade: this.maxGrade,
         teacher: this.teacher
       }
+      try {
+        // @ts-ignore
+        newCourse.teacher = this.teacher?._links.self.href;
+      } catch (Error) {
+        newCourse.teacher = this.teacher;
+        console.log("Teacher: " + JSON.stringify(newCourse.teacher));
+      }
+
 
       this.onAddCourse.emit(newCourse);
 

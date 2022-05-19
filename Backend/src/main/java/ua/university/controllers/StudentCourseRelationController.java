@@ -1,9 +1,11 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.keycloak.representations.AccessToken;
 import ua.university.models.Course;
 import ua.university.models.StudentCourseRelation;
 import ua.university.services.StudentCourseRelationService;
+import ua.university.utils.KeycloakTokenUtil;
 import ua.university.utils.ServletUtils;
 
 import javax.servlet.ServletException;
@@ -40,9 +42,24 @@ public class StudentCourseRelationController extends HttpServlet {
             int idValue = ServletUtils.getURIId(request.getRequestURI());
             String data = "";
 
+            AccessToken accessToken = KeycloakTokenUtil.getToken(request, request.getHeader("Authorization"));
+            assert accessToken != null;
+            String userName = "";
             String studentCourseRelationsJsonString = "";
+
             if (idValue == -1) {
-                studentCourseRelationsJsonString = this.service.indexStudentCourseRelation();
+                if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_ADMIN")){
+                    studentCourseRelationsJsonString = this.service.indexStudentCourseRelation();
+                }
+                else if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_STUDENT")){
+                    userName = KeycloakTokenUtil.getName(accessToken);
+                    studentCourseRelationsJsonString = this.service.indexStudentCourseRelationForStudent(userName);
+                }
+                else if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_TEACHER")) {
+                    userName = KeycloakTokenUtil.getName(accessToken);
+                    studentCourseRelationsJsonString = this.service.indexStudentCourseRelationForTeacher(userName);
+                }
+
             } else {
                 studentCourseRelationsJsonString = this.service.getStudentCourseRelation(idValue);
             }
@@ -72,6 +89,11 @@ public class StudentCourseRelationController extends HttpServlet {
             }
 
             StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
+
+            if(studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()){
+                studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
+            }
+
             String studentCourseRelationsJsonString = this.service.addStudentCourseRelation(studentCourseRelation);
 
             out.print(studentCourseRelationsJsonString);
@@ -112,6 +134,11 @@ public class StudentCourseRelationController extends HttpServlet {
 
             int id = ServletUtils.getURIId(req.getRequestURI());
             StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
+
+            if(studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()){
+                studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
+            }
+
             String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(id, studentCourseRelation);
 
             out.print(studentCourseRelationJsonString);

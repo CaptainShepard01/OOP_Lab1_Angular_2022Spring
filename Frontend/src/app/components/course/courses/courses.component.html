@@ -1,2 +1,2 @@
-<app-add-course (onAddCourse)="addCourse($event)"></app-add-course>
+<app-add-course *ngIf="hasRole" (onAddCourse)="addCourse($event)"></app-add-course>
 <app-course-item *ngFor="let course of courses" [course]="course"></app-course-item>
