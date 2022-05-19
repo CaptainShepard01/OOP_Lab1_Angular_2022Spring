@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http'
 import {map, Observable} from "rxjs";
 import {Course} from "../../interfaces/Course";
+import {environment} from "../../../environments/environment";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -13,7 +14,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class CourseService {
-  private apiUrl = 'http://localhost:8080/api/courses'
+  private apiUrl = `${environment.apiUrl}courses`;
 
   constructor(private http: HttpClient) {
   }
