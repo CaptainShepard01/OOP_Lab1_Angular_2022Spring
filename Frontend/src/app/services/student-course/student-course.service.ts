@@ -26,9 +26,22 @@ export class StudentCourseService {
     );
   }
 
+  getStudentCoursesForTeacher(name: string): Observable<StudentCourse[]>{
+    return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByTeacherNameContaining?name=${name}`).pipe(
+      map(response => response._embedded.studentCourseRelations)
+    );
+  }
+
+  getStudentCoursesForStudent(name: string): Observable<StudentCourse[]>{
+    return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByStudentNameContaining?name=${name}`).pipe(
+      map(response => response._embedded.studentCourseRelations)
+    );
+  }
+
   getStudentCourse(id: number): Observable<StudentCourse> {
     return this.http.get<StudentCourse>(`${this.apiUrl}/${id}`);
   }
+
 
   deleteStudentCourse(id: number):Observable<unknown>{
     return this.http.delete<unknown>(`${this.apiUrl}/${id}`);

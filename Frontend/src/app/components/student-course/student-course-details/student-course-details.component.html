@@ -32,10 +32,9 @@
   </div>
 
   <div *ngIf="hasTeacherRole" class="col-md-4 form-group">
-    <label for="grade" class="form-label control-label required">New max grade</label>
+    <label for="grade" class="form-label control-label required">New grade</label>
     <input type="number" class="form-control" name="grade" id="grade" min="0" max="100" [(ngModel)]="grade"
            formControlName="grade"/>
-
     <app-field-error-display
       [displayError]="isFieldValid('grade')"
       errorMsg="Please enter a valid grade (1-100)">

@@ -25,9 +25,19 @@ export class StudentCoursesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.studentCourseService.getStudentCourses().subscribe((studentCourses) => (this.studentCourses = studentCourses));
-
     this.roles = this.keycloakService.getUserRoles();
+    // @ts-ignore
+    let name: string = this.keycloakService.getKeycloakInstance().profile.firstName;
+
+    if(this.roles.includes("ROLE_ADMIN")){
+      this.studentCourseService.getStudentCourses().subscribe((studentCourses) => (this.studentCourses = studentCourses));
+    }
+    else if(this.roles.includes("ROLE_STUDENT")){
+      this.studentCourseService.getStudentCoursesForStudent(name).subscribe((studentCourses) => (this.studentCourses = studentCourses));
+    }
+    else if(this.roles.includes("ROLE_TEACHER")) {
+      this.studentCourseService.getStudentCoursesForTeacher(name).subscribe((studentCourses) => (this.studentCourses = studentCourses));
+    }
   }
 
   deleteStudentCourse(tudentCourseId: number | undefined){

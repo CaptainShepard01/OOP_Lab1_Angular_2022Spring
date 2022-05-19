@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Course} from "../../../interfaces/Course";
 import {Student} from "../../../interfaces/Student";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -10,6 +10,8 @@ import {StudentService} from "../../../services/student/student.service";
 import {CourseService} from "../../../services/course/course.service";
 import {StudentCourse} from "../../../interfaces/StudentCourse";
 import {KeycloakService} from "keycloak-angular";
+import {HttpClient} from "@angular/common/http";
+import {Teacher} from "../../../interfaces/Teacher";
 
 @Component({
   selector: 'app-student-course-details',
@@ -38,11 +40,12 @@ export class StudentCourseDetailsComponent implements OnInit {
               private courseService: CourseService,
               private router: Router,
               private fieldValidator: FieldValidatorService,
-              private keycloakService: KeycloakService) {
+              private keycloakService: KeycloakService,
+              private http: HttpClient) {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(()=>{
+    this.route.paramMap.subscribe(() => {
       this.showStudentCourse();
     });
 
@@ -75,7 +78,7 @@ export class StudentCourseDetailsComponent implements OnInit {
     // return true;
   }
 
-  onDelete(studentCourseId: number | undefined){
+  onDelete(studentCourseId: number | undefined) {
     if (studentCourseId != null) {
       this.studentCourseService.deleteStudentCourse(studentCourseId).subscribe({
           next: response => {
@@ -96,10 +99,23 @@ export class StudentCourseDetailsComponent implements OnInit {
   showStudentCourse() {
     // @ts-ignore
     const studentCourseId: number = +this.route.snapshot.paramMap.get('id');
-    this.studentCourseService.getStudentCourse(studentCourseId).subscribe( data => {
+    this.studentCourseService.getStudentCourse(studentCourseId).subscribe(data => {
       this.studentCourse = data;
+      try {
+        // @ts-ignore
+        let student_link: string = this.studentCourse?._links.student.href;
+        this.http.get<Student>(student_link).subscribe((student) => (this.studentCourse.student = student));
+
+        // @ts-ignore
+        let course_link: string = this.studentCourse?._links.course.href;
+        this.http.get<Course>(course_link).subscribe((course) => (this.studentCourse.course = course));
+
+      } catch (Error) {
+        console.log(Error);
+      }
+
       // @ts-ignore
-      console.log("Course: " + (data.id))
+      console.log("Student-course relation: " + (data.id))
     });
   }
 
@@ -112,23 +128,22 @@ export class StudentCourseDetailsComponent implements OnInit {
         review: this.review
       }
 
-      if (this.hasTeacherRole && !this.hasAdminRole){
+      if (this.hasTeacherRole && !this.hasAdminRole) {
         newStudentCourse.student = this.studentCourse.student;
         newStudentCourse.course = this.studentCourse.course;
       }
 
-      console.log(newStudentCourse);
-
       try {
         // @ts-ignore
-        newStudentCourse.student = this.student?._links.self.href;
+        newStudentCourse.student = this.student?._links.student.href;
         // @ts-ignore
-        newStudentCourse.course = this.course?._links.self.href;
+        newStudentCourse.course = this.course?._links.course.href;
       } catch (Error) {
         newStudentCourse.student = this.student;
         newStudentCourse.course = this.course;
-        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student)+ JSON.stringify(newStudentCourse.course));
+        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student) + JSON.stringify(newStudentCourse.course));
       }
+
 
       this.studentCourseService.updateStudentCourse(newStudentCourse).subscribe({
           next: response => {

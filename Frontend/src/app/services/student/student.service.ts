@@ -26,7 +26,8 @@ export class StudentService {
   }
 
   getStudentByName(name: string): Observable<Student>{
-    return this.http.get<Student>(`${this.apiUrl}?name=${name}`);
+    // return this.http.get<Student>(`${this.apiUrl}?name=${name}`);
+    return this.http.get<Student>(`${this.apiUrl}/search/findByNameContaining?name=${name}`);
   }
 
   getStudent(id: number): Observable<Student> {

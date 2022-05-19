@@ -91,9 +91,9 @@ export class AddStudentCourseComponent implements OnInit {
 
       try {
         // @ts-ignore
-        newStudentCourse.student = this.student?._links.self.href;
+        newStudentCourse.student = this.student?._links.student.href;
         // @ts-ignore
-        newStudentCourse.course = this.course?._links.self.href;
+        newStudentCourse.course = this.course?._links.course.href;
       } catch (Error) {
         newStudentCourse.student = this.student;
         newStudentCourse.course = this.course;

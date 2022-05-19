@@ -29,7 +29,7 @@ export class CourseService {
     return this.http.get<Course>(`${this.apiUrl}/${id}`);
   }
 
-  deleteCourse(id: number):Observable<unknown>{
+  deleteCourse(id: number): Observable<unknown>{
     return this.http.delete<unknown>(`${this.apiUrl}/${id}`);
   }
 

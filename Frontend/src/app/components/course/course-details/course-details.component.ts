@@ -8,6 +8,7 @@ import {TeacherService} from "../../../services/teacher/teacher.service";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FieldValidatorService} from "../../../services/utils/field-validator.service";
 import {KeycloakService} from "keycloak-angular";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-course-details',
@@ -33,7 +34,8 @@ export class CourseDetailsComponent implements OnInit {
               private teacherService: TeacherService,
               private router: Router,
               private fieldValidator: FieldValidatorService,
-              private keycloakService: KeycloakService) {
+              private keycloakService: KeycloakService,
+              private http: HttpClient) {
   }
 
   get hasRole(): boolean {
@@ -43,7 +45,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(()=>{
+    this.route.paramMap.subscribe(() => {
       this.showCourse();
     });
 
@@ -60,7 +62,7 @@ export class CourseDetailsComponent implements OnInit {
     this.roles = this.keycloakService.getUserRoles();
   }
 
-  onDelete(courseId: number | undefined){
+  onDelete(courseId: number | undefined) {
     if (courseId != null) {
       this.courseService.deleteCourse(courseId).subscribe({
           next: response => {
@@ -81,8 +83,16 @@ export class CourseDetailsComponent implements OnInit {
   showCourse() {
     // @ts-ignore
     const courseId: number = +this.route.snapshot.paramMap.get('id');
-    this.courseService.getCourse(courseId).subscribe( data => {
+    this.courseService.getCourse(courseId).subscribe(data => {
       this.course = data;
+      try {
+        // @ts-ignore
+        let link: string = this.course?._links.teacher.href;
+        this.http.get<Teacher>(link).subscribe((teacher) => (this.course.teacher = teacher));
+      } catch (Error) {
+        console.log(Error);
+      }
+
       // @ts-ignore
       console.log("Course: " + (data.id))
     });

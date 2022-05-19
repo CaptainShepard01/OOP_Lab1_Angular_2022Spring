@@ -50,12 +50,11 @@ export class AddCourseComponent implements OnInit {
       }
       try {
         // @ts-ignore
-        newCourse.teacher = this.teacher?._links.self.href;
+        newCourse.teacher = this.teacher?._links.teacher.href;
       } catch (Error) {
         newCourse.teacher = this.teacher;
         console.log("Teacher: " + JSON.stringify(newCourse.teacher));
       }
-
 
       this.onAddCourse.emit(newCourse);
 

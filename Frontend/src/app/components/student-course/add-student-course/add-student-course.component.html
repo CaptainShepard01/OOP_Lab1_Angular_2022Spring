@@ -34,7 +34,7 @@
 
   <div *ngIf="hasAdminRole" class="col-md-4 form-group">
     <label for="review" class="form-label control-label required">Review</label>
-    <input type="number" class="form-control" name="review" id="review" min="0" max="100" [(ngModel)]="review"
+    <input type="text" class="form-control" name="review" id="review" min="0" max="100" [(ngModel)]="review"
            formControlName="review"/>
 
     <app-field-error-display
