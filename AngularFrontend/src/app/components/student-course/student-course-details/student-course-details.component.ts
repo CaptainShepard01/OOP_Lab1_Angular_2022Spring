@@ -11,7 +11,6 @@ import {CourseService} from "../../../services/course/course.service";
 import {StudentCourse} from "../../../interfaces/StudentCourse";
 import {KeycloakService} from "keycloak-angular";
 import {HttpClient} from "@angular/common/http";
-import {Teacher} from "../../../interfaces/Teacher";
 
 @Component({
   selector: 'app-student-course-details',
