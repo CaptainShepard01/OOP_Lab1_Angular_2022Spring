@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Frontend';
+  title = 'AngularFrontend';
 
   constructor(private http: HttpClient,
               private keycloakService: KeycloakService,
