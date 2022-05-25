@@ -31,10 +31,10 @@ public class CourseDAO {
         try {
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
             while (resultSet.next()) {
-                long id = resultSet.getLong("id");
+                int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int maxGrade = resultSet.getInt("max_grade");
-                long teacherId = resultSet.getLong("teacher_id");
+                int teacherId = resultSet.getInt("teacher_id");
                 Teacher teacher = this.teacherDAO.getTeacher(teacherId);
 
                 coursesList.add(new Course(id, name, maxGrade, teacher));
@@ -47,7 +47,7 @@ public class CourseDAO {
         return coursesList;
     }
 
-    public Course getCourse(long id) {
+    public Course getCourse(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM courses " +
                     "WHERE id=?");
@@ -56,10 +56,10 @@ public class CourseDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                return new Course(resultSet.getLong("id"),
+                return new Course(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getInt("max_grade"),
-                        this.teacherDAO.getTeacher(resultSet.getLong("teacher_id")));
+                        this.teacherDAO.getTeacher(resultSet.getInt("teacher_id")));
             }
 
             return null;
@@ -78,10 +78,10 @@ public class CourseDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                return new Course(resultSet.getLong("id"),
+                return new Course(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getInt("max_grade"),
-                        this.teacherDAO.getTeacher(resultSet.getLong("teacher_id")));
+                        this.teacherDAO.getTeacher(resultSet.getInt("teacher_id")));
             }
 
             return null;
@@ -121,10 +121,10 @@ public class CourseDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                resultList.add(new Course(resultSet.getLong("id"),
+                resultList.add(new Course(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getInt("max_grade"),
-                        this.teacherDAO.getTeacher(resultSet.getLong("teacher_id"))));
+                        this.teacherDAO.getTeacher(resultSet.getInt("teacher_id"))));
             }
 
             return resultList;
@@ -150,7 +150,7 @@ public class CourseDAO {
         }
     }
 
-    public boolean updateCourse(long id, Course updatedCourse) {
+    public boolean updateCourse(int id, Course updatedCourse) {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "UPDATE courses " +
@@ -174,7 +174,7 @@ public class CourseDAO {
         }
     }
 
-    public boolean deleteCourse(long id) {
+    public boolean deleteCourse(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM courses " +
                     "WHERE id = ?");

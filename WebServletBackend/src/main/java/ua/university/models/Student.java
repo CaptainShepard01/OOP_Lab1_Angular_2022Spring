@@ -5,18 +5,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Student implements IModel {
-    private long id;
+    private int id;
     private String name;
 
     public Student() {
     }
 
-    public Student(long id, String name) {
+    public Student(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -25,7 +25,7 @@ public class Student implements IModel {
         return "/students";
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

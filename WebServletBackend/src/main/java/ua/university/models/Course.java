@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Course implements IModel {
-    private long id;
+    private int id;
     private String name;
     private int maxGrade;
 
@@ -13,14 +13,14 @@ public class Course implements IModel {
     public Course() {
     }
 
-    public Course(long id, String name, int maxGrade, Teacher teacher) {
+    public Course(int id, String name, int maxGrade, Teacher teacher) {
         this.id = id;
         this.name = name;
         this.maxGrade = maxGrade;
         this.teacher = teacher;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -29,7 +29,7 @@ public class Course implements IModel {
         return "/courses";
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

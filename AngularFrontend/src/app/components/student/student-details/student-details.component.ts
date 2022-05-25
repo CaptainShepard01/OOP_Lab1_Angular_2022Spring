@@ -82,6 +82,7 @@ export class StudentDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       const newStudent = {
+        id: this.student.id,
         name: this.name
       }
 

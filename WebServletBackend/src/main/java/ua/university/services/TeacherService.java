@@ -58,7 +58,7 @@ public class TeacherService {
         return "";
     }
 
-    public String getTeacher(long id) {
+    public String getTeacher(int id) {
         try {
             return objectToJson(this.teacherDAO.getTeacher(id));
         } catch (Exception ex) {
@@ -89,7 +89,7 @@ public class TeacherService {
     }
 
 
-    public void deleteTeacher(long id) {
+    public void deleteTeacher(int id) {
         try {
             this.teacherDAO.deleteTeacher(id);
         } catch (Exception ex) {

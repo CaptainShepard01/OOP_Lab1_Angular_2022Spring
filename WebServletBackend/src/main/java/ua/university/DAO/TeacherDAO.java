@@ -28,7 +28,7 @@ public class TeacherDAO {
         try {
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
             while (resultSet.next()) {
-                long id = resultSet.getLong("id");
+                int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
 
                 teachersList.add(new Teacher(id, name));
@@ -41,7 +41,7 @@ public class TeacherDAO {
         return teachersList;
     }
 
-    public Teacher getTeacher(long id) {
+    public Teacher getTeacher(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM teachers " +
                     "WHERE id=?");
@@ -50,7 +50,7 @@ public class TeacherDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                return new Teacher(resultSet.getLong("id"),
+                return new Teacher(resultSet.getInt("id"),
                         resultSet.getString("name"));
             }
 
@@ -92,7 +92,7 @@ public class TeacherDAO {
         }
     }
 
-    public boolean updateTeacher(long id, Teacher updatedTeacher) {
+    public boolean updateTeacher(int id, Teacher updatedTeacher) {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "UPDATE teachers " +
@@ -114,7 +114,7 @@ public class TeacherDAO {
         }
     }
 
-    public boolean deleteTeacher(long id) {
+    public boolean deleteTeacher(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM teachers " +
                     "WHERE id = ?");

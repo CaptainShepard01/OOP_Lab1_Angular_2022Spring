@@ -132,14 +132,13 @@ public class StudentCourseRelationController extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int id = ServletUtils.getURIId(req.getRequestURI());
             StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
 
             if(studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()){
                 studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
             }
 
-            String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(id, studentCourseRelation);
+            String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(studentCourseRelation.getId(), studentCourseRelation);
 
             out.print(studentCourseRelationJsonString);
             resp.setStatus(200);

@@ -113,9 +113,8 @@ public class StudentController extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int id = ServletUtils.getURIId(req.getRequestURI());
             Student student = new ObjectMapper().readValue(requestBody.toString(), Student.class);
-            String studentJsonString = this.service.updateStudent(id, student);
+            String studentJsonString = this.service.updateStudent(student.getId(), student);
 
             out.print(studentJsonString);
             resp.setStatus(200);

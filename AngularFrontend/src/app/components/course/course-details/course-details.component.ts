@@ -101,6 +101,7 @@ export class CourseDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       let newCourse = {
+        id: this.course.id,
         name: this.name,
         maxGrade: this.maxGrade,
         teacher: this.teacher

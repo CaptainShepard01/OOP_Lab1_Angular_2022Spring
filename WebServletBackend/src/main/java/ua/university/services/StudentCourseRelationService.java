@@ -79,7 +79,7 @@ public class StudentCourseRelationService {
         return "";
     }
 
-    public String getStudentCourseRelation(long id) {
+    public String getStudentCourseRelation(int id) {
         try {
             return objectToJson(this.studentCourseRelationDAO.getStudentCourseRelation(id));
         } catch (Exception ex) {
@@ -110,7 +110,7 @@ public class StudentCourseRelationService {
     }
 
 
-    public void deleteStudentCourseRelation(long id) {
+    public void deleteStudentCourseRelation(int id) {
         try {
             this.studentCourseRelationDAO.deleteStudentCourseRelation(id);
         } catch (Exception ex) {

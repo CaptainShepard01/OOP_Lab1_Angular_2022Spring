@@ -81,6 +81,7 @@ export class TeacherDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       const newTeacher = {
+        id: this.teacher.id,
         name: this.name
       }
 

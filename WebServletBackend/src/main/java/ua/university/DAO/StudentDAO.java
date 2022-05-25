@@ -28,7 +28,7 @@ public class StudentDAO {
         try {
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
             while (resultSet.next()) {
-                long id = resultSet.getLong("id");
+                int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
 
                 studentsList.add(new Student(id, name));
@@ -41,7 +41,7 @@ public class StudentDAO {
         return studentsList;
     }
 
-    public Student getStudent(long id) {
+    public Student getStudent(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM students " +
                     "WHERE id=?");
@@ -50,7 +50,7 @@ public class StudentDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                return new Student(resultSet.getLong("id"),
+                return new Student(resultSet.getInt("id"),
                         resultSet.getString("name"));
             }
 
@@ -72,7 +72,7 @@ public class StudentDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                resultList.add(new Student(resultSet.getLong("id"),
+                resultList.add(new Student(resultSet.getInt("id"),
                         resultSet.getString("name")));
             }
 
@@ -114,7 +114,7 @@ public class StudentDAO {
         }
     }
 
-    public boolean updateStudent(long id, Student updatedStudent) {
+    public boolean updateStudent(int id, Student updatedStudent) {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "UPDATE students " +
@@ -136,7 +136,7 @@ public class StudentDAO {
         }
     }
 
-    public boolean deleteStudent(long id) {
+    public boolean deleteStudent(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM students " +
                     "WHERE id = ?");

@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface IModel {
     Map<String, String> fieldsMap();
-    long getId();
+    int getId();
     String modelURLPattern();
 }

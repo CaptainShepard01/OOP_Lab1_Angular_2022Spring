@@ -110,9 +110,8 @@ public class TeacherController extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int id = ServletUtils.getURIId(req.getRequestURI());
             Teacher teacher = new ObjectMapper().readValue(requestBody.toString(), Teacher.class);
-            String teacherJsonString = this.service.updateTeacher(id, teacher);
+            String teacherJsonString = this.service.updateTeacher(teacher.getId(), teacher);
 
             out.print(teacherJsonString);
             resp.setStatus(200);

@@ -57,7 +57,7 @@ public class StudentService {
         return "";
     }
 
-    public String getStudent(long id) {
+    public String getStudent(int id) {
         try {
             return objectToJson(this.studentDAO.getStudent(id));
         } catch (Exception ex) {
@@ -87,7 +87,7 @@ public class StudentService {
     }
 
 
-    public void deleteStudent(long id) {
+    public void deleteStudent(int id) {
         try {
             this.studentDAO.deleteStudent(id);
         } catch (Exception ex) {

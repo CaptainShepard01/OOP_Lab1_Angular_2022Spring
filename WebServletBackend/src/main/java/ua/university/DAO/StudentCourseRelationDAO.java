@@ -32,9 +32,9 @@ public class StudentCourseRelationDAO {
         try {
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
             while (resultSet.next()) {
-                long id = resultSet.getLong("id");
-                long studentId = resultSet.getLong("student_id");
-                long courseId = resultSet.getLong("course_id");
+                int id = resultSet.getInt("id");
+                int studentId = resultSet.getInt("student_id");
+                int courseId = resultSet.getInt("course_id");
                 int grade = resultSet.getInt("grade");
                 String review = resultSet.getString("review");
 
@@ -52,7 +52,7 @@ public class StudentCourseRelationDAO {
         return studentCourseRelationsList;
     }
 
-    public StudentCourseRelation getStudentCourseRelation(long id) {
+    public StudentCourseRelation getStudentCourseRelation(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM student_course_relations " +
                     "WHERE id=?");
@@ -61,9 +61,9 @@ public class StudentCourseRelationDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                return new StudentCourseRelation(resultSet.getLong("id"),
-                        this.studentDAO.getStudent(resultSet.getLong("student_id")),
-                        this.courseDAO.getCourse(resultSet.getLong("course_id")),
+                return new StudentCourseRelation(resultSet.getInt("id"),
+                        this.studentDAO.getStudent(resultSet.getInt("student_id")),
+                        this.courseDAO.getCourse(resultSet.getInt("course_id")),
                         resultSet.getInt("grade"),
                         resultSet.getString("review"));
             }
@@ -109,7 +109,7 @@ public class StudentCourseRelationDAO {
         }
     }
 
-    public boolean updateStudentCourseRelation(long id, StudentCourseRelation updatedStudentCourseRelation) {
+    public boolean updateStudentCourseRelation(int id, StudentCourseRelation updatedStudentCourseRelation) {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "UPDATE student_course_relations " +
@@ -134,7 +134,7 @@ public class StudentCourseRelationDAO {
         }
     }
 
-    public boolean deleteStudentCourseRelation(long id) {
+    public boolean deleteStudentCourseRelation(int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM student_course_relations " +
                     "WHERE id = ?");
@@ -162,9 +162,9 @@ public class StudentCourseRelationDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                resultList.add(new StudentCourseRelation(resultSet.getLong("id"),
-                        this.studentDAO.getStudent(resultSet.getLong("student_id")),
-                        this.courseDAO.getCourse(resultSet.getLong("course_id")),
+                resultList.add(new StudentCourseRelation(resultSet.getInt("id"),
+                        this.studentDAO.getStudent(resultSet.getInt("student_id")),
+                        this.courseDAO.getCourse(resultSet.getInt("course_id")),
                         resultSet.getInt("grade"),
                         resultSet.getString("review")));
             }
@@ -188,9 +188,9 @@ public class StudentCourseRelationDAO {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                resultList.add(new StudentCourseRelation(resultSet.getLong("id"),
-                        this.studentDAO.getStudent(resultSet.getLong("student_id")),
-                        this.courseDAO.getCourse(resultSet.getLong("course_id")),
+                resultList.add(new StudentCourseRelation(resultSet.getInt("id"),
+                        this.studentDAO.getStudent(resultSet.getInt("student_id")),
+                        this.courseDAO.getCourse(resultSet.getInt("course_id")),
                         resultSet.getInt("grade"),
                         resultSet.getString("review")));
             }

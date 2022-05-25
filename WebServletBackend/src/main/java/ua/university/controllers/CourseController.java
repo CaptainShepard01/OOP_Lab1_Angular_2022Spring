@@ -116,9 +116,8 @@ public class CourseController extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int id = ServletUtils.getURIId(req.getRequestURI());
             Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
-            String courseJsonString = this.service.updateCourse(id, course);
+            String courseJsonString = this.service.updateCourse(course.getId(), course);
 
             out.print(courseJsonString);
             resp.setStatus(200);

@@ -58,7 +58,7 @@ public class CourseService {
         return "";
     }
 
-    public String getCourse(long id) {
+    public String getCourse(int id) {
         try {
             return objectToJson(this.courseDAO.getCourse(id));
         } catch (Exception ex) {
@@ -89,7 +89,7 @@ public class CourseService {
     }
 
 
-    public void deleteCourse(long id) {
+    public void deleteCourse(int id) {
         try {
             this.courseDAO.deleteCourse(id);
         } catch (Exception ex) {
