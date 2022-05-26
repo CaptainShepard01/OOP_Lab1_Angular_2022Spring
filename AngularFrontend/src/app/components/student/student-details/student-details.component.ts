@@ -82,11 +82,10 @@ export class StudentDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       const newStudent = {
-        id: this.student.id,
         name: this.name
       }
 
-      this.studentService.updateStudent(newStudent).subscribe({
+      this.studentService.updateStudent(this.student.id, newStudent).subscribe({
           next: response => {
             console.log(`Response from updating: ${response}`);
             this.student = response;

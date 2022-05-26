@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ua.university.DAO.CourseDAO;
-import ua.university.DAO.TeacherDAO;
 import ua.university.models.Course;
 
 import java.sql.SQLException;

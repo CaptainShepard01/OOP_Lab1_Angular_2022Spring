@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {Student} from "../../interfaces/Student";
@@ -25,7 +25,7 @@ export class StudentService {
     );
   }
 
-  getStudentByName(name: string): Observable<Student>{
+  getStudentByName(name: string): Observable<Student> {
     // return this.http.get<Student>(`${this.apiUrl}?name=${name}`);
     return this.http.get<Student>(`${this.apiUrl}/search/findByNameContaining?name=${name}`);
   }
@@ -34,21 +34,22 @@ export class StudentService {
     return this.http.get<Student>(`${this.apiUrl}/${id}`);
   }
 
-  deleteStudent(id: number):Observable<unknown>{
+  deleteStudent(id: number): Observable<unknown> {
     return this.http.delete<unknown>(`${this.apiUrl}/${id}`);
   }
 
-  addStudent(student: Student):Observable<Student>{
+  addStudent(student: Student): Observable<Student> {
     return this.http.post<Student>(this.apiUrl, student, httpOptions);
   }
 
-  updateStudent(student: Student):Observable<Student>{
-    return this.http.put<Student>(this.apiUrl, student, httpOptions);
+  updateStudent(id: number | undefined, student: Student): Observable<Student> {
+    console.log(id, student);
+    return this.http.put<Student>(`${this.apiUrl}/${id}`, student, httpOptions);
   }
 }
 
-interface GetResponseStudents{
-  _embedded:{
+interface GetResponseStudents {
+  _embedded: {
     students: Student[];
   }
 }

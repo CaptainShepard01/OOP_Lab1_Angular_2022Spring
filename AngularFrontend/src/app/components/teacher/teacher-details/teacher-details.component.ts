@@ -81,11 +81,10 @@ export class TeacherDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       const newTeacher = {
-        id: this.teacher.id,
         name: this.name
       }
 
-      this.teacherService.updateTeacher(newTeacher).subscribe({
+      this.teacherService.updateTeacher(this.teacher.id, newTeacher).subscribe({
           next: response => {
             console.log(`Response from updating: ${response}`);
             this.teacher = response;

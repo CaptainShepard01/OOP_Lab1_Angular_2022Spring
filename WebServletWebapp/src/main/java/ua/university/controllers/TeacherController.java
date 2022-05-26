@@ -1,7 +1,6 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ua.university.models.Course;
 import ua.university.models.Teacher;
 import ua.university.services.TeacherService;
 import ua.university.utils.ServletUtils;
@@ -30,8 +29,7 @@ public class TeacherController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
@@ -55,7 +53,7 @@ public class TeacherController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -83,7 +81,7 @@ public class TeacherController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteTeacher(id);
@@ -94,7 +92,7 @@ public class TeacherController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -110,8 +108,9 @@ public class TeacherController extends HttpServlet {
                 e.printStackTrace();
             }
 
+            int idValue = ServletUtils.getURIId(req.getRequestURI());
             Teacher teacher = new ObjectMapper().readValue(requestBody.toString(), Teacher.class);
-            String teacherJsonString = this.service.updateTeacher(teacher.getId(), teacher);
+            String teacherJsonString = this.service.updateTeacher(idValue, teacher);
 
             out.print(teacherJsonString);
             resp.setStatus(200);

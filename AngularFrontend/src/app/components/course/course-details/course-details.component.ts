@@ -101,7 +101,6 @@ export class CourseDetailsComponent implements OnInit {
   onUpdate() {
     if (this.form.valid) {
       let newCourse = {
-        id: this.course.id,
         name: this.name,
         maxGrade: this.maxGrade,
         teacher: this.teacher
@@ -115,7 +114,7 @@ export class CourseDetailsComponent implements OnInit {
         console.log("Teacher: " + JSON.stringify(newCourse.teacher));
       }
 
-      this.courseService.updateCourse(newCourse).subscribe({
+      this.courseService.updateCourse(this.course.id, newCourse).subscribe({
           next: response => {
             console.log(`Response from updating: ${response}`);
             this.course = response;

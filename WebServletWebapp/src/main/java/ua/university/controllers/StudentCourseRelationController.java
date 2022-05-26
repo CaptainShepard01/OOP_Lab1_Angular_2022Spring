@@ -2,13 +2,11 @@ package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.representations.AccessToken;
-import ua.university.models.Course;
 import ua.university.models.StudentCourseRelation;
 import ua.university.services.StudentCourseRelationService;
 import ua.university.utils.KeycloakTokenUtil;
 import ua.university.utils.ServletUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +30,7 @@ public class StudentCourseRelationController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
@@ -72,7 +69,7 @@ public class StudentCourseRelationController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -105,7 +102,7 @@ public class StudentCourseRelationController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteStudentCourseRelation(id);
@@ -116,7 +113,7 @@ public class StudentCourseRelationController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -138,7 +135,8 @@ public class StudentCourseRelationController extends HttpServlet {
                 studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
             }
 
-            String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(studentCourseRelation.getId(), studentCourseRelation);
+            int idValue = ServletUtils.getURIId(req.getRequestURI());
+            String studentCourseRelationJsonString = this.service.updateStudentCourseRelation(idValue, studentCourseRelation);
 
             out.print(studentCourseRelationJsonString);
             resp.setStatus(200);

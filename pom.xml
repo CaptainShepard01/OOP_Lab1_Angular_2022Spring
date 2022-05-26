@@ -8,7 +8,7 @@
   <artifactId>OOP_Labs_2022Spring</artifactId>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>WebServletBackend</module>
+    <module>WebServletWebapp</module>
     <module>SpringBackend</module>
   </modules>
   <packaging>pom</packaging>
@@ -33,7 +33,7 @@
   </dependencies>
 
   <build>
-    <finalName>OOP_Lab1_Angular_2022Spring</finalName>
+    <finalName>OOP_Labs_2022Spring</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>

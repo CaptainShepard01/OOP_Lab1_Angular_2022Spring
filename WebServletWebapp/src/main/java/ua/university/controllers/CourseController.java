@@ -36,8 +36,7 @@ public class CourseController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
@@ -61,7 +60,7 @@ public class CourseController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -89,7 +88,7 @@ public class CourseController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteCourse(id);
@@ -100,7 +99,7 @@ public class CourseController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -116,8 +115,9 @@ public class CourseController extends HttpServlet {
                 e.printStackTrace();
             }
 
+            int idValue = ServletUtils.getURIId(req.getRequestURI());
             Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
-            String courseJsonString = this.service.updateCourse(course.getId(), course);
+            String courseJsonString = this.service.updateCourse(idValue, course);
 
             out.print(courseJsonString);
             resp.setStatus(200);

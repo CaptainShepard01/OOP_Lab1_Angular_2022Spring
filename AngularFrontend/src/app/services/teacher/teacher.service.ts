@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {Teacher} from "../../interfaces/Teacher";
@@ -29,21 +29,21 @@ export class TeacherService {
     return this.http.get<Teacher>(`${this.apiUrl}/${id}`);
   }
 
-  deleteTeacher(id: number):Observable<unknown>{
+  deleteTeacher(id: number): Observable<unknown> {
     return this.http.delete<unknown>(`${this.apiUrl}/${id}`);
   }
 
-  addTeacher(teacher: Teacher):Observable<Teacher>{
+  addTeacher(teacher: Teacher): Observable<Teacher> {
     return this.http.post<Teacher>(this.apiUrl, teacher, httpOptions);
   }
 
-  updateTeacher(teacher: Teacher):Observable<Teacher>{
-    return this.http.put<Teacher>(this.apiUrl, teacher, httpOptions);
+  updateTeacher(id: number | undefined, teacher: Teacher): Observable<Teacher> {
+    return this.http.put<Teacher>(`${this.apiUrl}/${id}`, teacher, httpOptions);
   }
 }
 
-interface GetResponseTeachers{
-  _embedded:{
+interface GetResponseTeachers {
+  _embedded: {
     teachers: Teacher[];
   }
 }

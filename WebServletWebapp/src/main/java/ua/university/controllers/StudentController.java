@@ -1,12 +1,10 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ua.university.models.Course;
 import ua.university.models.Student;
 import ua.university.services.StudentService;
 import ua.university.utils.ServletUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +28,7 @@ public class StudentController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");
@@ -58,7 +55,7 @@ public class StudentController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -86,7 +83,7 @@ public class StudentController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteStudent(id);
@@ -97,7 +94,7 @@ public class StudentController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         try {
             StringBuilder requestBody = new StringBuilder();
             PrintWriter out = resp.getWriter();
@@ -113,8 +110,9 @@ public class StudentController extends HttpServlet {
                 e.printStackTrace();
             }
 
+            int idValue = ServletUtils.getURIId(req.getRequestURI());
             Student student = new ObjectMapper().readValue(requestBody.toString(), Student.class);
-            String studentJsonString = this.service.updateStudent(student.getId(), student);
+            String studentJsonString = this.service.updateStudent(idValue, student);
 
             out.print(studentJsonString);
             resp.setStatus(200);

@@ -37,8 +37,8 @@ export class CourseService {
     return this.http.post<Course>(this.apiUrl, course, httpOptions);
   }
 
-  updateCourse(course: Course):Observable<Course>{
-    return this.http.put<Course>(this.apiUrl, course, httpOptions);
+  updateCourse(id: number | undefined, course: Course):Observable<Course>{
+    return this.http.put<Course>(`${this.apiUrl}/${id}`, course, httpOptions);
   }
 }
 

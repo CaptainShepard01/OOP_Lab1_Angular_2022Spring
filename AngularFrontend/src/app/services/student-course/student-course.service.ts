@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {StudentCourse} from "../../interfaces/StudentCourse";
@@ -26,13 +26,13 @@ export class StudentCourseService {
     );
   }
 
-  getStudentCoursesForTeacher(name: string): Observable<StudentCourse[]>{
+  getStudentCoursesForTeacher(name: string): Observable<StudentCourse[]> {
     return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByTeacherNameContaining?name=${name}`).pipe(
       map(response => response._embedded.studentCourseRelations)
     );
   }
 
-  getStudentCoursesForStudent(name: string): Observable<StudentCourse[]>{
+  getStudentCoursesForStudent(name: string): Observable<StudentCourse[]> {
     return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByStudentNameContaining?name=${name}`).pipe(
       map(response => response._embedded.studentCourseRelations)
     );
@@ -43,21 +43,21 @@ export class StudentCourseService {
   }
 
 
-  deleteStudentCourse(id: number):Observable<unknown>{
+  deleteStudentCourse(id: number): Observable<unknown> {
     return this.http.delete<unknown>(`${this.apiUrl}/${id}`);
   }
 
-  addStudentCourse(studentCourse: StudentCourse):Observable<StudentCourse>{
+  addStudentCourse(studentCourse: StudentCourse): Observable<StudentCourse> {
     return this.http.post<StudentCourse>(this.apiUrl, studentCourse, httpOptions);
   }
 
-  updateStudentCourse(studentCourse: StudentCourse):Observable<StudentCourse>{
-    return this.http.put<StudentCourse>(this.apiUrl, studentCourse, httpOptions);
+  updateStudentCourse(id: number | undefined, studentCourse: StudentCourse): Observable<StudentCourse> {
+    return this.http.put<StudentCourse>(`${this.apiUrl}/${id}`, studentCourse, httpOptions);
   }
 }
 
-interface GetResponseStudentCourseRelations{
-  _embedded:{
+interface GetResponseStudentCourseRelations {
+  _embedded: {
     studentCourseRelations: StudentCourse[];
   }
 }
