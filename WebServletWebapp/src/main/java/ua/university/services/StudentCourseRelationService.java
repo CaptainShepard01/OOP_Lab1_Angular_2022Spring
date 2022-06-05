@@ -3,7 +3,9 @@ package ua.university.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import ua.university.DAO.StudentCourseRelationDAO;
 import ua.university.models.*;
@@ -11,6 +13,7 @@ import ua.university.models.*;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 public class StudentCourseRelationService {
     private StudentCourseRelationDAO studentCourseRelationDAO;
 
@@ -18,17 +21,22 @@ public class StudentCourseRelationService {
         this.studentCourseRelationDAO = new StudentCourseRelationDAO();
     }
 
-    public void addTeacher(StudentCourseRelation studentCourseRelation) {
-        this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
+    public void addTeacher(StudentCourseRelation studentCourseRelation) throws SQLException {
+        try {
+            this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
+        }catch (SQLException ex){
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        }
     }
 
     private static String objectToJson(StudentCourseRelation data) {
         try {
             return new JSONObject(data).toString();
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
     private static String objectsToJson(List<StudentCourseRelation> data) {
@@ -46,75 +54,95 @@ public class StudentCourseRelationService {
             JSONObject jo2 = new JSONObject();
             jo2.put("_embedded", jo);
             return jo2.toString();
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String indexStudentCourseRelation() {
+    public String indexStudentCourseRelation() throws SQLException {
         try {
             return objectsToJson(this.studentCourseRelationDAO.indexStudentCourseRelation());
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String indexStudentCourseRelationForStudent(String studentName){
+    public String indexStudentCourseRelationForStudent(String studentName) throws SQLException {
         try {
             return objectsToJson(this.studentCourseRelationDAO.getStudentCourseRelationsForStudent(studentName));
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String indexStudentCourseRelationForTeacher(String teacherName){
+    public String indexStudentCourseRelationForTeacher(String teacherName) throws SQLException {
         try {
             return objectsToJson(this.studentCourseRelationDAO.getStudentCourseRelationsForTeacher(teacherName));
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String getStudentCourseRelation(int id) {
+    public String getStudentCourseRelation(int id) throws SQLException {
         try {
             return objectToJson(this.studentCourseRelationDAO.getStudentCourseRelation(id));
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String addStudentCourseRelation(StudentCourseRelation studentCourseRelation) {
+    public String addStudentCourseRelation(StudentCourseRelation studentCourseRelation) throws SQLException {
         this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
         try {
             studentCourseRelation.setId(this.studentCourseRelationDAO.getMaxGlobalId());
             return objectToJson(studentCourseRelation);
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String updateStudentCourseRelation(int id, StudentCourseRelation studentCourseRelation) {
-        this.studentCourseRelationDAO.updateStudentCourseRelation(id, studentCourseRelation);
+    public String updateStudentCourseRelation(int id, StudentCourseRelation studentCourseRelation) throws SQLException {
         ObjectMapper mapper = new ObjectMapper();
         try {
+            this.studentCourseRelationDAO.updateStudentCourseRelation(id, studentCourseRelation);
             return mapper.writeValueAsString(studentCourseRelation);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
     }
 
 
-    public void deleteStudentCourseRelation(int id) {
+    public void deleteStudentCourseRelation(int id) throws SQLException {
         try {
             this.studentCourseRelationDAO.deleteStudentCourseRelation(id);
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
         }
     }
 }

@@ -2,6 +2,8 @@ package ua.university.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import ua.university.DAO.TeacherDAO;
 import ua.university.models.Teacher;
 
@@ -12,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.sql.SQLException;
 
+@Slf4j
 public class TeacherService {
     private TeacherDAO teacherDAO;
 
@@ -22,10 +25,10 @@ public class TeacherService {
     private static String objectToJson(Teacher data) {
         try {
             return new JSONObject(data).toString();
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
     private static String objectsToJson(List<Teacher> data) {
@@ -43,10 +46,10 @@ public class TeacherService {
             JSONObject jo2 = new JSONObject();
             jo2.put("_embedded", jo);
             return jo2.toString();
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
     public String indexTeacher() {
@@ -58,42 +61,53 @@ public class TeacherService {
         return "";
     }
 
-    public String getTeacher(int id) {
+    public String getTeacher(int id) throws SQLException {
         try {
             return objectToJson(this.teacherDAO.getTeacher(id));
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String addTeacher(Teacher teacher) {
+    public String addTeacher(Teacher teacher) throws SQLException {
         this.teacherDAO.saveTeacher(teacher);
         try {
             teacher.setId(this.teacherDAO.getMaxGlobalId());
             return objectToJson(teacher);
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (JSONException ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
-        return "";
     }
 
-    public String updateTeacher(int id, Teacher teacher) {
-        this.teacherDAO.updateTeacher(id, teacher);
+    public String updateTeacher(int id, Teacher teacher) throws SQLException {
         ObjectMapper mapper = new ObjectMapper();
         try {
+            this.teacherDAO.updateTeacher(id, teacher);
             return mapper.writeValueAsString(teacher);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new JSONException(ex.getMessage());
         }
     }
 
 
-    public void deleteTeacher(int id) {
+    public void deleteTeacher(int id) throws SQLException {
         try {
             this.teacherDAO.deleteTeacher(id);
-        } catch (Exception ex) {
-            System.out.println(ex);
+        } catch (SQLException ex) {
+            log.error(ex.getMessage());
+            throw new SQLException(ex.getMessage());
         }
     }
 }

@@ -1,6 +1,7 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ua.university.models.Course;
 import ua.university.services.CourseService;
 import ua.university.utils.ServletUtils;
@@ -18,6 +19,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 @WebServlet("/api/courses/*")
+@Slf4j
 public class CourseController extends HttpServlet {
     private CourseService service;
 
@@ -43,7 +45,6 @@ public class CourseController extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
 
             int idValue = ServletUtils.getURIId(request.getRequestURI());
-            String data = "";
 
             String coursesJsonString = "";
             if (idValue == -1) {
@@ -53,9 +54,15 @@ public class CourseController extends HttpServlet {
             }
 
             out.print(coursesJsonString);
-        } catch (Exception exception) {
+        } catch (SQLException exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
+
+        }
+        catch (Exception exception){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+
         }
     }
 
