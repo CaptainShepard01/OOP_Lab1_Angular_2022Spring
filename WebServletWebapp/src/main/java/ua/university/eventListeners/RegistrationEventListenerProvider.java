@@ -1,5 +1,6 @@
 package ua.university.eventListeners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.sql.SQLException;
 import java.util.*;
 
+@Slf4j
 public class RegistrationEventListenerProvider implements EventListenerProvider {
     private final KeycloakSession session;
     private final RealmProvider model;
@@ -51,7 +53,12 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 
-                studentDAO.saveStudent(new Student(-1, newRegisteredUser.getFirstName()));
+                try {
+                    studentDAO.saveStudent(new Student(-1, newRegisteredUser.getFirstName()));
+                } catch (SQLException e) {
+                    log.error(e.getMessage());
+                    throw new RuntimeException(e);
+                }
             }
 
             if (Objects.equals(ourRole, "[teacher]")) {
@@ -59,7 +66,12 @@ public class RegistrationEventListenerProvider implements EventListenerProvider 
                 System.out.println("Our Role model: " + roleModel.getName());
                 newRegisteredUser.grantRole(roleModel);
 
-                teacherDAO.saveTeacher(new Teacher(-1, newRegisteredUser.getFirstName()));
+                try {
+                    teacherDAO.saveTeacher(new Teacher(-1, newRegisteredUser.getFirstName()));
+                } catch (SQLException e) {
+                    log.error(e.getMessage());
+                    throw new RuntimeException(e);
+                }
             }
 
             System.out.println("Hello, am I alive? Am I? (•_•) ( •_•)>⌐■-■ (⌐■_■) -> " + newRegisteredUser.getUsername());
