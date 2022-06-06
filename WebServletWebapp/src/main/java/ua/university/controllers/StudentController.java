@@ -1,6 +1,7 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ua.university.models.Student;
 import ua.university.services.StudentService;
 import ua.university.utils.ServletUtils;
@@ -15,6 +16,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 @WebServlet(value = "/api/students/*")
+@Slf4j
 public class StudentController extends HttpServlet {
     private StudentService service;
 
@@ -48,9 +50,17 @@ public class StudentController extends HttpServlet {
             }
 
             out.print(studentsJsonString);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Student get error");
+            }
         } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -62,23 +72,29 @@ public class StudentController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
+
 
             Student student = new ObjectMapper().readValue(requestBody.toString(), Student.class);
             String studentsJsonString = this.service.addStudent(student);
 
             out.print(studentsJsonString);
 
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Student post error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -87,9 +103,17 @@ public class StudentController extends HttpServlet {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteStudent(id);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Student delete error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -101,13 +125,10 @@ public class StudentController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
 
             int idValue = ServletUtils.getURIId(req.getRequestURI());
@@ -116,9 +137,17 @@ public class StudentController extends HttpServlet {
 
             out.print(studentJsonString);
             resp.setStatus(200);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Student update error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 }

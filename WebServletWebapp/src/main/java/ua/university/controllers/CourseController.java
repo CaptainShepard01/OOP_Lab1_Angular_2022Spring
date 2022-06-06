@@ -33,11 +33,6 @@ public class CourseController extends HttpServlet {
     }
 
     @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        super.service(req, res);
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
@@ -57,80 +52,102 @@ public class CourseController extends HttpServlet {
         } catch (SQLException exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.error(exception.getMessage());
-
-        }
-        catch (Exception exception){
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Course get error");
+            }
+        } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             log.error(exception.getMessage());
-
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         try {
             StringBuilder requestBody = new StringBuilder();
-            PrintWriter out = resp.getWriter();
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
+
 
             Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
             String coursesJsonString = this.service.addCourse(course);
 
             out.print(coursesJsonString);
 
-        }catch (Exception exception){
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            int id = ServletUtils.getURIId(req.getRequestURI());
-            this.service.deleteCourse(id);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Course post error");
+            }
         } catch (Exception exception) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            int id = ServletUtils.getURIId(request.getRequestURI());
+            this.service.deleteCourse(id);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Course delete error");
+            }
+        } catch (Exception exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
         try {
             StringBuilder requestBody = new StringBuilder();
-            PrintWriter out = resp.getWriter();
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
 
-            int idValue = ServletUtils.getURIId(req.getRequestURI());
+
+            int idValue = ServletUtils.getURIId(request.getRequestURI());
             Course course = new ObjectMapper().readValue(requestBody.toString(), Course.class);
             String courseJsonString = this.service.updateCourse(idValue, course);
 
             out.print(courseJsonString);
-            resp.setStatus(200);
+            response.setStatus(200);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Course update error");
+            }
         } catch (Exception exception) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
         }
     }
 }

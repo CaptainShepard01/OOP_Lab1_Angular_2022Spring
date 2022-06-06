@@ -1,11 +1,11 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ua.university.models.Teacher;
 import ua.university.services.TeacherService;
 import ua.university.utils.ServletUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 @WebServlet("/api/teachers/*")
+@Slf4j
 public class TeacherController extends HttpServlet {
     private TeacherService service;
 
@@ -36,7 +37,6 @@ public class TeacherController extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
 
             int idValue = ServletUtils.getURIId(request.getRequestURI());
-            String data = "";
 
             String teachersJsonString = "";
             if (idValue == -1) {
@@ -46,9 +46,17 @@ public class TeacherController extends HttpServlet {
             }
 
             out.print(teachersJsonString);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Teacher get error");
+            }
         } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -60,13 +68,10 @@ public class TeacherController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
 
             Teacher teacher = new ObjectMapper().readValue(requestBody.toString(), Teacher.class);
@@ -74,9 +79,17 @@ public class TeacherController extends HttpServlet {
 
             out.print(teachersJsonString);
 
-        }catch (Exception exception){
+        } catch (SQLException exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Teacher post error");
+            }
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
         }
     }
 
@@ -85,9 +98,17 @@ public class TeacherController extends HttpServlet {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteTeacher(id);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Teacher delete error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -99,14 +120,12 @@ public class TeacherController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
+
 
             int idValue = ServletUtils.getURIId(req.getRequestURI());
             Teacher teacher = new ObjectMapper().readValue(requestBody.toString(), Teacher.class);
@@ -114,9 +133,17 @@ public class TeacherController extends HttpServlet {
 
             out.print(teacherJsonString);
             resp.setStatus(200);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("Teacher update error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 }

@@ -1,6 +1,7 @@
 package ua.university.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.AccessToken;
 import ua.university.models.StudentCourseRelation;
 import ua.university.services.StudentCourseRelationService;
@@ -17,6 +18,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 @WebServlet("/api/studentCourseRelations/*")
+@Slf4j
 public class StudentCourseRelationController extends HttpServlet {
     private StudentCourseRelationService service;
 
@@ -45,14 +47,12 @@ public class StudentCourseRelationController extends HttpServlet {
             String studentCourseRelationsJsonString = "";
 
             if (idValue == -1) {
-                if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_ADMIN")){
+                if (KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_ADMIN")) {
                     studentCourseRelationsJsonString = this.service.indexStudentCourseRelation();
-                }
-                else if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_STUDENT")){
+                } else if (KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_STUDENT")) {
                     userName = KeycloakTokenUtil.getName(accessToken);
                     studentCourseRelationsJsonString = this.service.indexStudentCourseRelationForStudent(userName);
-                }
-                else if(KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_TEACHER")) {
+                } else if (KeycloakTokenUtil.getRoles(accessToken).contains("ROLE_TEACHER")) {
                     userName = KeycloakTokenUtil.getName(accessToken);
                     studentCourseRelationsJsonString = this.service.indexStudentCourseRelationForTeacher(userName);
                 }
@@ -62,9 +62,17 @@ public class StudentCourseRelationController extends HttpServlet {
             }
 
             out.print(studentCourseRelationsJsonString);
+        } catch (SQLException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                response.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("S-c-r get error");
+            }
         } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -76,18 +84,15 @@ public class StudentCourseRelationController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
 
             StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
 
-            if(studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()){
+            if (studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()) {
                 studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
             }
 
@@ -95,9 +100,17 @@ public class StudentCourseRelationController extends HttpServlet {
 
             out.print(studentCourseRelationsJsonString);
 
-        }catch (Exception exception){
+        } catch (SQLException exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("S-c-r post error");
+            }
+        } catch (Exception exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
         }
     }
 
@@ -106,9 +119,17 @@ public class StudentCourseRelationController extends HttpServlet {
         try {
             int id = ServletUtils.getURIId(req.getRequestURI());
             this.service.deleteStudentCourseRelation(id);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("S-c-r delete error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 
@@ -120,18 +141,15 @@ public class StudentCourseRelationController extends HttpServlet {
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            try (BufferedReader reader = req.getReader()) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    requestBody.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            BufferedReader reader = req.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
             }
 
             StudentCourseRelation studentCourseRelation = new ObjectMapper().readValue(requestBody.toString(), StudentCourseRelation.class);
 
-            if(studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()){
+            if (studentCourseRelation.getGrade() > studentCourseRelation.getCourse().getMaxGrade()) {
                 studentCourseRelation.setGrade(studentCourseRelation.getCourse().getMaxGrade());
             }
 
@@ -140,9 +158,17 @@ public class StudentCourseRelationController extends HttpServlet {
 
             out.print(studentCourseRelationJsonString);
             resp.setStatus(200);
+        } catch (SQLException exception) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error(exception.getMessage());
+            try {
+                resp.getWriter().println(exception.getMessage());
+            } catch (IOException e) {
+                log.error("S-c-r update error");
+            }
         } catch (Exception exception) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            System.out.println(exception);
+            log.error(exception.getMessage());
         }
     }
 }
