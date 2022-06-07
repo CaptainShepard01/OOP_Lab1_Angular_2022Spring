@@ -21,21 +21,15 @@ export class StudentCourseService {
   }
 
   getStudentCourses(): Observable<StudentCourse[]> {
-    return this.http.get<GetResponseStudentCourseRelations>(this.apiUrl).pipe(
-      map(response => response._embedded.studentCourseRelations)
-    );
+    return this.http.get<StudentCourse[]>(this.apiUrl);
   }
 
   getStudentCoursesForTeacher(name: string): Observable<StudentCourse[]> {
-    return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByTeacherNameContaining?name=${name}`).pipe(
-      map(response => response._embedded.studentCourseRelations)
-    );
+    return this.http.get<StudentCourse[]>(`${this.apiUrl}/search/findByTeacherNameContaining?name=${name}`);
   }
 
   getStudentCoursesForStudent(name: string): Observable<StudentCourse[]> {
-    return this.http.get<GetResponseStudentCourseRelations>(`${this.apiUrl}/search/findByStudentNameContaining?name=${name}`).pipe(
-      map(response => response._embedded.studentCourseRelations)
-    );
+    return this.http.get<StudentCourse[]>(`${this.apiUrl}/search/findByStudentNameContaining?name=${name}`);
   }
 
   getStudentCourse(id: number): Observable<StudentCourse> {
@@ -53,11 +47,5 @@ export class StudentCourseService {
 
   updateStudentCourse(id: number | undefined, studentCourse: StudentCourse): Observable<StudentCourse> {
     return this.http.put<StudentCourse>(`${this.apiUrl}/${id}`, studentCourse, httpOptions);
-  }
-}
-
-interface GetResponseStudentCourseRelations {
-  _embedded: {
-    studentCourseRelations: StudentCourse[];
   }
 }

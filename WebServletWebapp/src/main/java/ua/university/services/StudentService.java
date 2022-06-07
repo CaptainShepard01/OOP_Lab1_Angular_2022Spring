@@ -41,11 +41,8 @@ public class StudentService {
             for (Student datum : data) {
                 array.put(new JSONObject(datum));
             }
-            JSONObject jo = new JSONObject();
-            jo.put("students", array);
-            JSONObject jo2 = new JSONObject();
-            jo2.put("_embedded", jo);
-            return jo2.toString();
+
+            return array.toString();
         } catch (JSONException ex) {
             log.error(ex.getMessage());
             throw new JSONException(ex.getMessage());
@@ -78,8 +75,8 @@ public class StudentService {
 
     public String addStudent(Student student) throws SQLException {
         try {
-            this.studentDAO.saveStudent(student);
-            student.setId(this.studentDAO.getMaxGlobalId());
+            int id = this.studentDAO.saveStudent(student);
+            student.setId(id);
             return objectToJson(student);
         } catch (SQLException ex) {
             log.error(ex.getMessage());

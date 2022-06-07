@@ -85,13 +85,13 @@ export class CourseDetailsComponent implements OnInit {
     const courseId: number = +this.route.snapshot.paramMap.get('id');
     this.courseService.getCourse(courseId).subscribe(data => {
       this.course = data;
-      try {
-        // @ts-ignore
-        let link: string = this.course?._links.teacher.href;
-        this.http.get<Teacher>(link).subscribe((teacher) => (this.course.teacher = teacher));
-      } catch (Error) {
-        console.log(Error);
-      }
+      // try {
+      //   // @ts-ignore
+      //   let link: string = this.course?._links.teacher.href;
+      //   this.http.get<Teacher>(link).subscribe((teacher) => (this.course.teacher = teacher));
+      // } catch (Error) {
+      //   console.log(Error);
+      // }
 
       // @ts-ignore
       console.log("Course: " + (data.id))
@@ -106,13 +106,13 @@ export class CourseDetailsComponent implements OnInit {
         teacher: this.teacher
       }
 
-      try {
-        // @ts-ignore
-        newCourse.teacher = this.teacher?._links.self.href;
-      } catch (Error) {
-        newCourse.teacher = this.teacher;
-        console.log("Teacher: " + JSON.stringify(newCourse.teacher));
-      }
+      // try {
+      //   // @ts-ignore
+      //   newCourse.teacher = this.teacher?._links.self.href;
+      // } catch (Error) {
+      //   newCourse.teacher = this.teacher;
+      //   console.log("Teacher: " + JSON.stringify(newCourse.teacher));
+      // }
 
       this.courseService.updateCourse(this.course.id, newCourse).subscribe({
           next: response => {

@@ -147,9 +147,9 @@ public class CourseDAO {
         }
     }
 
-    public void saveCourse(Course course) throws SQLException {
+    public int saveCourse(Course course) throws SQLException {
         String sql1 = "SELECT id from teachers WHERE id=?";
-        String sql2 = "INSERT INTO courses (name, max_grade, teacher_id) VALUES(?, ?, ?)";
+        String sql2 = "INSERT INTO courses (name, max_grade, teacher_id) VALUES(?, ?, ?) RETURNING id";
 
         try (PreparedStatement ps1 = connection.prepareStatement(sql1);
              PreparedStatement ps2 = connection.prepareStatement(sql2)) {
@@ -169,7 +169,14 @@ public class CourseDAO {
             ps2.setString(1, course.getName());
             ps2.setInt(2, course.getMaxGrade());
             ps2.executeUpdate();
+
+            ResultSet rs2 = ps2.executeQuery();
             connection.commit();
+
+            if (rs2.next()) {
+                return rs2.getInt(1);
+            }
+            return -1;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new SQLException(e.getMessage());

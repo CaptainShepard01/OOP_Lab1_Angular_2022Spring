@@ -100,18 +100,18 @@ export class StudentCourseDetailsComponent implements OnInit {
     const studentCourseId: number = +this.route.snapshot.paramMap.get('id');
     this.studentCourseService.getStudentCourse(studentCourseId).subscribe(data => {
       this.studentCourse = data;
-      try {
-        // @ts-ignore
-        let student_link: string = this.studentCourse?._links.student.href;
-        this.http.get<Student>(student_link).subscribe((student) => (this.studentCourse.student = student));
-
-        // @ts-ignore
-        let course_link: string = this.studentCourse?._links.course.href;
-        this.http.get<Course>(course_link).subscribe((course) => (this.studentCourse.course = course));
-
-      } catch (Error) {
-        console.log(Error);
-      }
+      // try {
+      //   // @ts-ignore
+      //   let student_link: string = this.studentCourse?._links.student.href;
+      //   this.http.get<Student>(student_link).subscribe((student) => (this.studentCourse.student = student));
+      //
+      //   // @ts-ignore
+      //   let course_link: string = this.studentCourse?._links.course.href;
+      //   this.http.get<Course>(course_link).subscribe((course) => (this.studentCourse.course = course));
+      //
+      // } catch (Error) {
+      //   console.log(Error);
+      // }
 
       // @ts-ignore
       console.log("Student-course relation: " + (data.id))
@@ -132,17 +132,16 @@ export class StudentCourseDetailsComponent implements OnInit {
         newStudentCourse.course = this.studentCourse.course;
       }
 
-      try {
-        // @ts-ignore
-        newStudentCourse.student = this.student?._links.student.href;
-        // @ts-ignore
-        newStudentCourse.course = this.course?._links.course.href;
-      } catch (Error) {
-        newStudentCourse.student = this.student;
-        newStudentCourse.course = this.course;
-        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student) + JSON.stringify(newStudentCourse.course));
-      }
-
+      // try {
+      //   // @ts-ignore
+      //   newStudentCourse.student = this.student?._links.student.href;
+      //   // @ts-ignore
+      //   newStudentCourse.course = this.course?._links.course.href;
+      // } catch (Error) {
+      //   newStudentCourse.student = this.student;
+      //   newStudentCourse.course = this.course;
+      //   console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student) + JSON.stringify(newStudentCourse.course));
+      // }
 
       this.studentCourseService.updateStudentCourse(this.studentCourse.id, newStudentCourse).subscribe({
           next: response => {

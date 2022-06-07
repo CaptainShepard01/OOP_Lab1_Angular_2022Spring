@@ -10,13 +10,13 @@ import java.util.Arrays;
 @Component
 public class MethodInterceptor implements HandlerInterceptor {
 
-    private final String[] allowedMethods = new String[]{"POST", "GET", "OPTIONS"};
+    private final String[] allowedMethods = new String[]{"POST", "GET", "OPTIONS", "DELETE", "PUT"};
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (Arrays.stream(allowedMethods).noneMatch(x -> x.equals(request.getMethod()))) {
             response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            response.setHeader("Allow", "POST, GET, OPTIONS");
+            response.setHeader("Allow", "POST, GET, OPTIONS, DELETE, PUT");
             response.setContentType("message/http");
             response.getWriter().println(request.getMethod() + " method not allowed");
             response.getWriter().flush();

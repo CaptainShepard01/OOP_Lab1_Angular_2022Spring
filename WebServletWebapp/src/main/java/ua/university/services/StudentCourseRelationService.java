@@ -21,15 +21,6 @@ public class StudentCourseRelationService {
         this.studentCourseRelationDAO = new StudentCourseRelationDAO();
     }
 
-    public void addTeacher(StudentCourseRelation studentCourseRelation) throws SQLException {
-        try {
-            this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
-        }catch (SQLException ex){
-            log.error(ex.getMessage());
-            throw new SQLException(ex.getMessage());
-        }
-    }
-
     private static String objectToJson(StudentCourseRelation data) {
         try {
             return new JSONObject(data).toString();
@@ -49,11 +40,8 @@ public class StudentCourseRelationService {
             for (StudentCourseRelation datum : data) {
                 array.put(new JSONObject(datum));
             }
-            JSONObject jo = new JSONObject();
-            jo.put("studentCourseRelations", array);
-            JSONObject jo2 = new JSONObject();
-            jo2.put("_embedded", jo);
-            return jo2.toString();
+
+            return array.toString();
         } catch (JSONException ex) {
             log.error(ex.getMessage());
             throw new JSONException(ex.getMessage());
@@ -109,9 +97,9 @@ public class StudentCourseRelationService {
     }
 
     public String addStudentCourseRelation(StudentCourseRelation studentCourseRelation) throws SQLException {
-        this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
         try {
-            studentCourseRelation.setId(this.studentCourseRelationDAO.getMaxGlobalId());
+            int id =this.studentCourseRelationDAO.saveStudentCourseRelation(studentCourseRelation);
+            studentCourseRelation.setId(id);
             return objectToJson(studentCourseRelation);
         } catch (SQLException ex) {
             log.error(ex.getMessage());

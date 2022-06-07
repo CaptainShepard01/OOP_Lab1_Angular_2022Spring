@@ -20,9 +20,7 @@ export class TeacherService {
   }
 
   getTeachers(): Observable<Teacher[]> {
-    return this.http.get<GetResponseTeachers>(this.apiUrl).pipe(
-      map(response => response._embedded.teachers)
-    );
+    return this.http.get<Teacher[]>(this.apiUrl);
   }
 
   getTeacher(id: number): Observable<Teacher> {
@@ -39,11 +37,5 @@ export class TeacherService {
 
   updateTeacher(id: number | undefined, teacher: Teacher): Observable<Teacher> {
     return this.http.put<Teacher>(`${this.apiUrl}/${id}`, teacher, httpOptions);
-  }
-}
-
-interface GetResponseTeachers {
-  _embedded: {
-    teachers: Teacher[];
   }
 }

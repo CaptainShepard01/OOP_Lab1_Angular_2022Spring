@@ -89,16 +89,16 @@ export class AddStudentCourseComponent implements OnInit {
 
       console.log(newStudentCourse);
 
-      try {
-        // @ts-ignore
-        newStudentCourse.student = this.student?._links.student.href;
-        // @ts-ignore
-        newStudentCourse.course = this.course?._links.course.href;
-      } catch (Error) {
-        newStudentCourse.student = this.student;
-        newStudentCourse.course = this.course;
-        console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student)+ JSON.stringify(newStudentCourse.course));
-      }
+      // try {
+      //   // @ts-ignore
+      //   newStudentCourse.student = this.student?._links.student.href;
+      //   // @ts-ignore
+      //   newStudentCourse.course = this.course?._links.course.href;
+      // } catch (Error) {
+      //   newStudentCourse.student = this.student;
+      //   newStudentCourse.course = this.course;
+      //   console.log("Student-course relation: " + JSON.stringify(newStudentCourse.student)+ JSON.stringify(newStudentCourse.course));
+      // }
 
       this.onAddStudentCourse.emit(newStudentCourse);
 

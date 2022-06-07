@@ -95,10 +95,10 @@ public class StudentCourseRelationDAO {
         }
     }
 
-    public void saveStudentCourseRelation(StudentCourseRelation studentCourseRelation) throws SQLException {
+    public int saveStudentCourseRelation(StudentCourseRelation studentCourseRelation) throws SQLException {
         String sql1 = "SELECT id from students WHERE id=?";
         String sql2 = "SELECT id from courses WHERE id=?";
-        String sql3 = "INSERT INTO student_course_relations (student_id, course_id, grade, review) VALUES(?, ?, ?, ?)";
+        String sql3 = "INSERT INTO student_course_relations (student_id, course_id, grade, review) VALUES(?, ?, ?, ?) RETURNING id";
 
         try (PreparedStatement ps1 = connection.prepareStatement(sql1);
              PreparedStatement ps2 = connection.prepareStatement(sql2);
@@ -130,7 +130,14 @@ public class StudentCourseRelationDAO {
             ps3.setInt(3, studentCourseRelation.getGrade());
             ps3.setString(4, studentCourseRelation.getReview());
             ps3.executeUpdate();
+
+            ResultSet rs3 = ps3.executeQuery();
             connection.commit();
+
+            if (rs3.next()) {
+                return rs3.getInt(1);
+            }
+            return -1;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new SQLException(e.getMessage());
@@ -197,8 +204,8 @@ public class StudentCourseRelationDAO {
         String sql1 = "SELECT id from student_course_relations WHERE id=?";
         String sql2 = "DELETE FROM student_course_relations WHERE id = ?";
 
-        try(PreparedStatement ps1 = connection.prepareStatement(sql1);
-        PreparedStatement ps2 = connection.prepareStatement(sql2)) {
+        try (PreparedStatement ps1 = connection.prepareStatement(sql1);
+             PreparedStatement ps2 = connection.prepareStatement(sql2)) {
             connection.setAutoCommit(false);
 
             ps1.setInt(1, id);
@@ -225,8 +232,8 @@ public class StudentCourseRelationDAO {
         String sql1 = "SELECT id FROM students WHERE name=?";
         String sql2 = "SELECT * FROM student_course_relations WHERE student_id=?";
 
-        try(PreparedStatement ps1 = connection.prepareStatement(sql1);
-            PreparedStatement ps2 = connection.prepareStatement(sql2)) {
+        try (PreparedStatement ps1 = connection.prepareStatement(sql1);
+             PreparedStatement ps2 = connection.prepareStatement(sql2)) {
             ps1.setString(1, studentName);
 
             ResultSet rs1 = ps1.executeQuery();
@@ -260,8 +267,8 @@ public class StudentCourseRelationDAO {
 
         String sql1 = "SELECT id FROM teachers WHERE name=?";
         String sql2 = "SELECT * FROM student_course_relations WHERE student_id=?";
-        try(PreparedStatement ps1 = connection.prepareStatement(sql1);
-            PreparedStatement ps2 = connection.prepareStatement(sql2)) {
+        try (PreparedStatement ps1 = connection.prepareStatement(sql1);
+             PreparedStatement ps2 = connection.prepareStatement(sql2)) {
             ps1.setString(1, teacherName);
 
             ResultSet rs1 = ps1.executeQuery();

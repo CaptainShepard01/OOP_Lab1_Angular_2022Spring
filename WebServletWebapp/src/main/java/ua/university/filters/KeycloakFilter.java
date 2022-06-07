@@ -1,5 +1,6 @@
 package ua.university.filters;
 
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.AccessToken;
 import ua.university.utils.KeycloakTokenUtil;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebFilter("/api/*")
+@Slf4j
 public class KeycloakFilter implements Filter {
     private final List<String> requiredRoles = Arrays.asList("ROLE_ADMIN", "ROLE_STUDENT", "ROLE_TEACHER");
 
@@ -21,6 +23,10 @@ public class KeycloakFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         boolean hasRequiredRole = false;
+
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS,  DELETE");
+        response.addHeader("Access-Control-Allow-Headers", "*");
 
         if (request.getMethod().equals("OPTIONS")) {
 //            filterChain.doFilter(servletRequest, servletResponse);
@@ -36,7 +42,7 @@ public class KeycloakFilter implements Filter {
                     }
                 }
             } catch (Exception ex) {
-                System.out.println(ex);
+                log.error(ex.getMessage());
                 response.setStatus(401);
                 return;
             }

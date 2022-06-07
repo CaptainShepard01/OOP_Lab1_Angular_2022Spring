@@ -81,15 +81,21 @@ public class TeacherDAO {
         }
     }
 
-    public void saveTeacher(Teacher teacher) throws SQLException {
+    public int saveTeacher(Teacher teacher) throws SQLException {
         try {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO teachers " +
                     "(name) " +
-                    "VALUES(?)");
+                    "VALUES(?) RETURNING id");
             connection.setAutoCommit(false);
             statement.setString(1, teacher.getName());
             statement.executeUpdate();
+            ResultSet rs = statement.executeQuery();
             connection.commit();
+
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+            return -1;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new SQLException(e.getMessage());
@@ -97,7 +103,7 @@ public class TeacherDAO {
     }
 
     public void updateTeacher(int id, Teacher updatedTeacher) throws SQLException {
-        String sql1 = "SELECT id FROM teachers WHERE name=?";
+        String sql1 = "SELECT id FROM teachers WHERE id=?";
         String sql2 = "UPDATE teachers SET name=? WHERE id=?";
 
         try(PreparedStatement ps1 = connection.prepareStatement(sql1);
@@ -124,7 +130,7 @@ public class TeacherDAO {
     }
 
     public void deleteTeacher(int id) throws SQLException {
-        String sql1 = "SELECT id FROM teachers WHERE name=?";
+        String sql1 = "SELECT id FROM teachers WHERE id=?";
         String sql2 = "DELETE from teachers WHERE id=?";
 
         try(PreparedStatement ps1 = connection.prepareStatement(sql1);

@@ -1,17 +1,17 @@
 package ua.university.modelEntities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "students")
 @Entity
+@Getter
+@Setter
+@ToString
 public class Student {
 
     @Id

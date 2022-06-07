@@ -41,11 +41,8 @@ public class TeacherService {
             for (Teacher datum : data) {
                 array.put(new JSONObject(datum));
             }
-            JSONObject jo = new JSONObject();
-            jo.put("teachers", array);
-            JSONObject jo2 = new JSONObject();
-            jo2.put("_embedded", jo);
-            return jo2.toString();
+
+            return array.toString();
         } catch (JSONException ex) {
             log.error(ex.getMessage());
             throw new JSONException(ex.getMessage());
@@ -74,9 +71,9 @@ public class TeacherService {
     }
 
     public String addTeacher(Teacher teacher) throws SQLException {
-        this.teacherDAO.saveTeacher(teacher);
         try {
-            teacher.setId(this.teacherDAO.getMaxGlobalId());
+            int id = this.teacherDAO.saveTeacher(teacher);
+            teacher.setId(id);
             return objectToJson(teacher);
         } catch (SQLException ex) {
             log.error(ex.getMessage());

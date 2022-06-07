@@ -1,17 +1,17 @@
 package ua.university.modelEntities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "student_course_relations")
 @Entity
+@Getter
+@Setter
+@ToString
 public class StudentCourseRelation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,12 +33,4 @@ public class StudentCourseRelation {
     @Column(name = "review", nullable = false)
     @JsonProperty
     private String review;
-
-    public Integer getCourseId() {
-        return course.getId();
-    }
-
-    public Integer getStudentId() {
-        return student.getId();
-    }
 }

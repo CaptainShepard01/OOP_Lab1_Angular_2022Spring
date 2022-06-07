@@ -20,9 +20,7 @@ export class CourseService {
   }
 
   getCourses(): Observable<Course[]> {
-    return this.http.get<GetResponseCourses>(this.apiUrl).pipe(
-      map(response => response._embedded.courses)
-    );
+    return this.http.get<Course[]>(this.apiUrl);
   }
 
   getCourse(id: number): Observable<Course> {
@@ -39,11 +37,5 @@ export class CourseService {
 
   updateCourse(id: number | undefined, course: Course):Observable<Course>{
     return this.http.put<Course>(`${this.apiUrl}/${id}`, course, httpOptions);
-  }
-}
-
-interface GetResponseCourses{
-  _embedded:{
-    courses: Course[];
   }
 }
